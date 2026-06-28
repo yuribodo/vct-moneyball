@@ -1,0 +1,50 @@
+{
+  "baselines": [
+    {
+      "label": "winrate-elo",
+      "metrics": {
+        "accuracy": 0.605206,
+        "brier": 0.238163,
+        "calibration_error": 0.040601,
+        "log_loss": 0.669264
+      }
+    },
+    {
+      "label": "recent-form",
+      "metrics": {
+        "accuracy": 0.600868,
+        "brier": 0.243264,
+        "calibration_error": 0.062463,
+        "log_loss": 0.681095
+      }
+    },
+    {
+      "label": "coin",
+      "metrics": {
+        "accuracy": 0.475054,
+        "brier": 0.25,
+        "calibration_error": 0.024946,
+        "log_loss": 0.693147
+      }
+    }
+  ],
+  "created_at": "2026-06-28T15:37:40.268063+00:00",
+  "cutoff": "2026-04-01T00:00:00+00:00",
+  "data_window": {
+    "end": "2026-06-25T18:00:00+00:00",
+    "start": "2025-07-03T17:15:00+00:00"
+  },
+  "feature_fingerprint": "2fd8bdac36b88f6d",
+  "leakage_verified": true,
+  "learner": "logreg",
+  "model": {
+    "accuracy": 0.62039,
+    "brier": 0.235073,
+    "calibration_error": 0.055426,
+    "log_loss": 0.662855
+  },
+  "n_eval": 461,
+  "n_train": 665,
+  "run_id": "634622b3b7d942d8a8cebd99c7263d92",
+  "underpowered": false
+}
