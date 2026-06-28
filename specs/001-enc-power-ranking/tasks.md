@@ -25,12 +25,12 @@ noted. Source root is `services/core/src/vct_moneyball/`; tests under `services/
 
 **Purpose**: Project initialization and structure
 
-- [ ] T001 Create source/test tree per plan (`src/vct_moneyball/{collect,store,score,rank,evaluate,cli}`, `tests/{unit,integration,fixtures}`, `alembic/`, and repo-root `artifacts/rankings/enc-2026/`) under services/core/
-- [ ] T002 Initialize uv project with dependency groups (base: sqlalchemy, psycopg[binary], alembic, pydantic; scraping: playwright; ml: pandas, numpy, scipy; dev: pytest, ruff) in services/core/pyproject.toml
-- [ ] T003 [P] Configure ruff lint + format rules in services/core/pyproject.toml
-- [ ] T004 [P] Configure pytest (testpaths, markers `unit`/`integration`) in services/core/pyproject.toml
-- [ ] T005 [P] Initialize DVC and track `artifacts/` + raw HTML cache dir at repo root (.dvc/, .dvcignore)
-- [ ] T006 Verify Postgres connectivity from `.env` `DATABASE_URL` via `make up` (Postgres 16 container)
+- [X] T001 Create source/test tree per plan (`src/vct_moneyball/{collect,store,score,rank,evaluate,cli}`, `tests/{unit,integration,fixtures}`, `alembic/`, and repo-root `artifacts/rankings/enc-2026/`) under services/core/
+- [X] T002 Initialize uv project with dependency groups (base: sqlalchemy, psycopg[binary], alembic, pydantic; scraping: playwright; ml: pandas, numpy, scipy; dev: pytest, ruff) in services/core/pyproject.toml
+- [X] T003 [P] Configure ruff lint + format rules in services/core/pyproject.toml
+- [X] T004 [P] Configure pytest (testpaths, markers `unit`/`integration`) in services/core/pyproject.toml
+- [X] T005 [P] Initialize DVC and track `artifacts/` + raw HTML cache dir at repo root (.dvc/, .dvcignore)
+- [X] T006 Verify Postgres connectivity from `.env` `DATABASE_URL` via `make up` (Postgres 16 container)
 
 ---
 
@@ -40,13 +40,13 @@ noted. Source root is `services/core/src/vct_moneyball/`; tests under `services/
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T007 Implement versioned scoring/config params (data-window months, cutoff, metric weights, min-history threshold, confidence cutoffs, `config_hash`) in src/vct_moneyball/config.py
-- [ ] T008 Implement SQLAlchemy 2.0 engine/session factory (psycopg driver) in src/vct_moneyball/store/db.py
-- [ ] T009 Initialize Alembic (alembic.ini, env.py wired to `DATABASE_URL`) in services/core/alembic/
-- [ ] T010 Define all SQLAlchemy models (team, player, team_player, map, match, match_map, player_map_stat, ranking, ranking_entry, ranking_map_breakdown, outcome_comparison) with provenance columns, constraints, and indexes per data-model.md in src/vct_moneyball/store/models.py
-- [ ] T011 Generate initial Alembic migration creating the full schema (UNIQUE/CHECK/FK constraints + indexes) in services/core/alembic/versions/
-- [ ] T012 [P] Implement `vctm` CLI skeleton (collect/build-ranking/evaluate subcommands, `--json`, stderr+non-zero exit convention) in src/vct_moneyball/cli/main.py
-- [ ] T013 [P] Implement logging + error/exit helpers in src/vct_moneyball/common/logging.py
+- [X] T007 Implement versioned scoring/config params (data-window months, cutoff, metric weights, min-history threshold, confidence cutoffs, `config_hash`) in src/vct_moneyball/config.py
+- [X] T008 Implement SQLAlchemy 2.0 engine/session factory (psycopg driver) in src/vct_moneyball/store/db.py
+- [X] T009 Initialize Alembic (alembic.ini, env.py wired to `DATABASE_URL`) in services/core/alembic/
+- [X] T010 Define all SQLAlchemy models (team, player, team_player, map, match, match_map, player_map_stat, ranking, ranking_entry, ranking_map_breakdown, outcome_comparison) with provenance columns, constraints, and indexes per data-model.md in src/vct_moneyball/store/models.py
+- [X] T011 Generate initial Alembic migration creating the full schema (UNIQUE/CHECK/FK constraints + indexes) in services/core/alembic/versions/
+- [X] T012 [P] Implement `vctm` CLI skeleton (collect/build-ranking/evaluate subcommands, `--json`, stderr+non-zero exit convention) in src/vct_moneyball/cli/main.py
+- [X] T013 [P] Implement logging + error/exit helpers in src/vct_moneyball/common/logging.py
 
 **Checkpoint**: Schema migrated, config + DB + CLI scaffold ready — stories can begin.
 
@@ -63,24 +63,24 @@ contributors (spec SC-001/002/005).
 
 ### Tests for User Story 1 (write first, ensure they FAIL)
 
-- [ ] T014 [P] [US1] Unit test: per-map player composite scoring (normalization + weights + low-history baseline) in tests/unit/test_score.py
-- [ ] T015 [P] [US1] Unit test: team aggregation, strict 1..16 ordering, and tie-break in tests/unit/test_rank.py
-- [ ] T016 [P] [US1] Unit test: VLR parser turns fixture HTML into `player_map_stat` records with provenance in tests/unit/test_parse.py
-- [ ] T017 [P] [US1] Integration test: `build-ranking` on fixtures yields a schema-valid artifact (16 teams, full map breakdown, contributors) validated against contracts/ranking-artifact.schema.json in tests/integration/test_build_ranking.py
+- [X] T014 [P] [US1] Unit test: per-map player composite scoring (normalization + weights + low-history baseline) in tests/unit/test_score.py
+- [X] T015 [P] [US1] Unit test: team aggregation, strict 1..16 ordering, and tie-break in tests/unit/test_rank.py
+- [X] T016 [P] [US1] Unit test: VLR parser turns fixture HTML into `player_map_stat` records with provenance in tests/unit/test_parse.py
+- [X] T017 [P] [US1] Integration test: `build-ranking` on fixtures yields a schema-valid artifact (16 teams, full map breakdown, contributors) validated against contracts/ranking-artifact.schema.json in tests/integration/test_build_ranking.py
 
 ### Implementation for User Story 1
 
-- [ ] T018 [P] [US1] Raw HTML cache (write/read keyed by URL + captured_at) in src/vct_moneyball/collect/cache.py
-- [ ] T019 [US1] Rate-limited, cache-first Playwright fetcher in src/vct_moneyball/collect/client.py (depends on T018)
-- [ ] T020 [P] [US1] VLR parsers (team, roster, match, per-map stats) in src/vct_moneyball/collect/parse.py
-- [ ] T021 [US1] ENC team/roster + in-window match discovery in src/vct_moneyball/collect/targets.py (depends on T019, T020)
-- [ ] T022 [US1] Upsert repositories writing provenance for collected rows in src/vct_moneyball/store/repositories.py (depends on T010)
-- [ ] T023 [US1] `vctm collect` command (validates exactly 16 ENC teams) in src/vct_moneyball/cli/collect.py (depends on T021, T022)
-- [ ] T024 [P] [US1] Per-map player scoring + window normalization + labeled low-confidence baseline in src/vct_moneyball/score/player.py (depends on T007)
-- [ ] T025 [US1] Team aggregation, per-map breakdown, tie-break, confidence rollup in src/vct_moneyball/rank/aggregate.py (depends on T024)
-- [ ] T026 [US1] Ranking artifact builder (JSON validated vs schema + Markdown render) in src/vct_moneyball/rank/artifact.py (depends on T025)
-- [ ] T027 [US1] `vctm build-ranking` command writing artifact + `ranking*` rows in src/vct_moneyball/cli/build_ranking.py (depends on T026)
-- [ ] T028 [US1] Capture one real match fixture and validate the full chain end-to-end (quickstart scenario 1) in tests/fixtures/ + tests/integration/test_single_match_e2e.py
+- [X] T018 [P] [US1] Raw HTML cache (write/read keyed by URL + captured_at) in src/vct_moneyball/collect/cache.py
+- [X] T019 [US1] Rate-limited, cache-first Playwright fetcher in src/vct_moneyball/collect/client.py (depends on T018)
+- [X] T020 [P] [US1] VLR parsers (team, roster, match, per-map stats) in src/vct_moneyball/collect/parse.py
+- [X] T021 [US1] ENC team/roster + in-window match discovery in src/vct_moneyball/collect/targets.py (depends on T019, T020)
+- [X] T022 [US1] Upsert repositories writing provenance for collected rows in src/vct_moneyball/store/repositories.py (depends on T010)
+- [X] T023 [US1] `vctm collect` command (validates exactly 16 ENC teams) in src/vct_moneyball/cli/collect.py (depends on T021, T022)
+- [X] T024 [P] [US1] Per-map player scoring + window normalization + labeled low-confidence baseline in src/vct_moneyball/score/player.py (depends on T007)
+- [X] T025 [US1] Team aggregation, per-map breakdown, tie-break, confidence rollup in src/vct_moneyball/rank/aggregate.py (depends on T024)
+- [X] T026 [US1] Ranking artifact builder (JSON validated vs schema + Markdown render) in src/vct_moneyball/rank/artifact.py (depends on T025)
+- [X] T027 [US1] `vctm build-ranking` command writing artifact + `ranking*` rows in src/vct_moneyball/cli/build_ranking.py (depends on T026)
+- [X] T028 [US1] Capture one real match fixture and validate the full chain end-to-end (quickstart scenario 1) in tests/fixtures/ + tests/integration/test_single_match_e2e.py
 
 **Checkpoint**: A ranking artifact builds from data and is independently testable — MVP.
 
@@ -97,16 +97,16 @@ from cache and get identical output (spec SC-003/004, FR-006/008/009).
 
 ### Tests for User Story 2 (write first, ensure they FAIL)
 
-- [ ] T029 [P] [US2] Integration test: `build-ranking` exits non-zero and writes nothing when `published_at` is within 24h of (or after) `tournament_start` in tests/integration/test_lock_deadline.py
-- [ ] T030 [P] [US2] Integration test: refusing to overwrite an existing version/dir; `--supersedes` creates a new artifact referencing the original in tests/integration/test_immutability.py
-- [ ] T031 [P] [US2] Integration test: provenance completeness for every referenced row + deterministic offline cache rebuild in tests/integration/test_provenance_repro.py
+- [X] T029 [P] [US2] Integration test: `build-ranking` exits non-zero and writes nothing when `published_at` is within 24h of (or after) `tournament_start` in tests/integration/test_lock_deadline.py
+- [X] T030 [P] [US2] Integration test: refusing to overwrite an existing version/dir; `--supersedes` creates a new artifact referencing the original in tests/integration/test_immutability.py
+- [X] T031 [P] [US2] Integration test: provenance completeness for every referenced row + deterministic offline cache rebuild in tests/integration/test_provenance_repro.py
 
 ### Implementation for User Story 2
 
-- [ ] T032 [US2] Enforce lock-deadline gate (`published_at` ≤ `tournament_start` − 24h) in src/vct_moneyball/cli/build_ranking.py
-- [ ] T033 [US2] Immutability guard (never overwrite output dir/`ranking.version`; append-only) + `--supersedes` linkage in src/vct_moneyball/rank/artifact.py
-- [ ] T034 [US2] Pre-build provenance validation gate (fail if any referenced row lacks `source_url`/`captured_at`) in src/vct_moneyball/rank/validate.py
-- [ ] T035 [US2] Record `config_hash` + data window in artifact and confirm `--use-cache` offline rebuild path in src/vct_moneyball/rank/artifact.py + src/vct_moneyball/collect/client.py
+- [X] T032 [US2] Enforce lock-deadline gate (`published_at` ≤ `tournament_start` − 24h) in src/vct_moneyball/cli/build_ranking.py
+- [X] T033 [US2] Immutability guard (never overwrite output dir/`ranking.version`; append-only) + `--supersedes` linkage in src/vct_moneyball/rank/artifact.py
+- [X] T034 [US2] Pre-build provenance validation gate (fail if any referenced row lacks `source_url`/`captured_at`) in src/vct_moneyball/rank/validate.py
+- [X] T035 [US2] Record `config_hash` + data window in artifact and confirm `--use-cache` offline rebuild path in src/vct_moneyball/rank/artifact.py + src/vct_moneyball/collect/client.py
 
 **Checkpoint**: The artifact is provably locked, dated, immutable, and reproducible.
 
@@ -123,15 +123,15 @@ ranking untouched (spec SC-006, FR-011).
 
 ### Tests for User Story 3 (write first, ensure they FAIL)
 
-- [ ] T036 [P] [US3] Unit test: rank-agreement metrics (Spearman's rho, Kendall's tau, top-k hit rate) in tests/unit/test_metrics.py
-- [ ] T037 [P] [US3] Integration test: `evaluate` writes `outcome_comparison`, reports vs baseline, leaves the ranking unchanged in tests/integration/test_evaluate.py
+- [X] T036 [P] [US3] Unit test: rank-agreement metrics (Spearman's rho, Kendall's tau, top-k hit rate) in tests/unit/test_metrics.py
+- [X] T037 [P] [US3] Integration test: `evaluate` writes `outcome_comparison`, reports vs baseline, leaves the ranking unchanged in tests/integration/test_evaluate.py
 
 ### Implementation for User Story 3
 
-- [ ] T038 [P] [US3] Final-standings loader/validator in src/vct_moneyball/evaluate/standings.py
-- [ ] T039 [P] [US3] Rank-agreement metrics in src/vct_moneyball/evaluate/metrics.py
-- [ ] T040 [US3] Comparison service (predicted vs baseline, write `outcome_comparison`) in src/vct_moneyball/evaluate/compare.py (depends on T038, T039)
-- [ ] T041 [US3] `vctm evaluate` command in src/vct_moneyball/cli/evaluate.py (depends on T040)
+- [X] T038 [P] [US3] Final-standings loader/validator in src/vct_moneyball/evaluate/standings.py
+- [X] T039 [P] [US3] Rank-agreement metrics in src/vct_moneyball/evaluate/metrics.py
+- [X] T040 [US3] Comparison service (predicted vs baseline, write `outcome_comparison`) in src/vct_moneyball/evaluate/compare.py (depends on T038, T039)
+- [X] T041 [US3] `vctm evaluate` command in src/vct_moneyball/cli/evaluate.py (depends on T040)
 
 **Checkpoint**: All three stories independently functional.
 
@@ -139,11 +139,11 @@ ranking untouched (spec SC-006, FR-011).
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T042 [P] Document the `vctm` commands and run flow in services/core/README.md
-- [ ] T043 [P] Add Makefile targets `collect` / `build-ranking` / `evaluate` in Makefile
-- [ ] T044 Run the full quickstart.md validation (all 4 scenarios) end-to-end
-- [ ] T045 [P] Consistency pass on exit codes, stderr messages, and low-confidence flagging across CLI commands
-- [ ] T046 Confirm `make lint && make fmt && make test` are green
+- [X] T042 [P] Document the `vctm` commands and run flow in services/core/README.md
+- [X] T043 [P] Add Makefile targets `collect` / `build-ranking` / `evaluate` in Makefile
+- [X] T044 Run the full quickstart.md validation (all 4 scenarios) end-to-end
+- [X] T045 [P] Consistency pass on exit codes, stderr messages, and low-confidence flagging across CLI commands
+- [X] T046 Confirm `make lint && make fmt && make test` are green
 
 ---
 

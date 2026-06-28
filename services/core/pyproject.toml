@@ -9,20 +9,31 @@ dependencies = [
     "pydantic-settings>=2.3",
     "sqlalchemy>=2.0",
     "psycopg[binary]>=3.2",
+    "alembic>=1.13",
+    "jsonschema>=4.22",
     "python-dotenv>=1.0",
 ]
+
+# Console entry point for the MVP pipeline CLI.
+[project.scripts]
+vctm = "vct_moneyball.cli.main:main"
 
 # Optional groups: declared but NOT installed by default.
 # Install on demand, e.g. `uv sync --group scraping`.
 [dependency-groups]
-scraping = ["playwright>=1.45"]
+scraping = ["playwright>=1.45", "beautifulsoup4>=4.12"]
 ml = [
     "pandas>=2.2",
+    "numpy>=1.26",
+    "scipy>=1.13",
     "scikit-learn>=1.5",
     "xgboost>=2.1",
     "lightgbm>=4.4",
 ]
 dl = ["torch>=2.3"]
+# Data/artifact versioning (Constitution I). Run `dvc init` and start tracking
+# `artifacts/` + the raw HTML cache once real collected data exists.
+data = ["dvc>=3.50"]
 api = [
     "fastapi>=0.111",
     "uvicorn[standard]>=0.30",
@@ -51,9 +62,17 @@ src = ["src", "tests"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
 
+[tool.ruff.lint.per-file-ignores]
+# Alembic autogenerates wide DDL lines; don't reflow generated migrations.
+"alembic/versions/*.py" = ["E501"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+markers = [
+    "unit: pure, offline unit tests (scoring, aggregation, parsing)",
+    "integration: tests that exercise the DB and pipeline against fixtures",
+]
 
 [tool.mypy]
 python_version = "3.12"

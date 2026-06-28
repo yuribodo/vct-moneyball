@@ -1,13 +1,17 @@
 CORE := services/core
+GROUPS := --group scraping --group ml
 
-.PHONY: help setup up down logs lint fmt test
+.PHONY: help setup sync up down logs lint fmt test migrate collect build-ranking evaluate
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-		awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
+		awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
 
 setup: ## Install Python deps (base + dev)
 	cd $(CORE) && uv sync
+
+sync: ## Install all pipeline deps (scraping + ml)
+	cd $(CORE) && uv sync $(GROUPS)
 
 up: ## Start Postgres (docker compose)
 	docker compose up -d
@@ -18,11 +22,23 @@ down: ## Stop services
 logs: ## Tail Postgres logs
 	docker compose logs -f postgres
 
+migrate: ## Apply database migrations
+	cd $(CORE) && uv run alembic upgrade head
+
 lint: ## Lint with ruff
 	cd $(CORE) && uv run ruff check .
 
 fmt: ## Format with ruff
 	cd $(CORE) && uv run ruff format .
 
-test: ## Run tests
-	cd $(CORE) && uv run pytest
+test: ## Run tests (unit + integration on fixtures)
+	cd $(CORE) && uv run $(GROUPS) pytest
+
+collect: ## vctm collect (set VCTM_ENC_TEAMS or VCTM_ENC_EVENT_URL)
+	cd $(CORE) && uv run $(GROUPS) vctm collect $(ARGS)
+
+build-ranking: ## vctm build-ranking (pass ARGS="--version ... --tournament-start ...")
+	cd $(CORE) && uv run $(GROUPS) vctm build-ranking $(ARGS)
+
+evaluate: ## vctm evaluate (pass ARGS="--version ... --standings ...")
+	cd $(CORE) && uv run $(GROUPS) vctm evaluate $(ARGS)

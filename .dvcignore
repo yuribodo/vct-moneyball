@@ -1,0 +1,7 @@
+# DVC ignore — patterns DVC should not track or hash.
+# Add-on to .gitignore for the data/artifact layer (Constitution I).
+*.tmp
+*.swp
+__pycache__/
+.pytest_cache/
+.ruff_cache/
