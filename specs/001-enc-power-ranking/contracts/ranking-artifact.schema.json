@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vct-moneyball/contracts/ranking-artifact.schema.json",
+  "title": "ENC Power Ranking Artifact",
+  "description": "The published, dated, immutable ranking artifact (ranking.json).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "published_at",
+    "tournament_start",
+    "data_window",
+    "config_hash",
+    "teams"
+  ],
+  "properties": {
+    "version": { "type": "string", "pattern": "^enc-2026\\.v[0-9]+$" },
+    "published_at": { "type": "string", "format": "date-time" },
+    "tournament_start": { "type": "string", "format": "date-time" },
+    "supersedes": { "type": ["string", "null"] },
+    "data_window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "type": "string", "format": "date-time" },
+        "end": { "type": "string", "format": "date-time" }
+      }
+    },
+    "config_hash": { "type": "string", "minLength": 8 },
+    "map_pool": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "teams": {
+      "type": "array",
+      "minItems": 16,
+      "maxItems": 16,
+      "items": { "$ref": "#/$defs/teamEntry" }
+    }
+  },
+  "$defs": {
+    "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+    "teamEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "position",
+        "team",
+        "country",
+        "team_score",
+        "confidence",
+        "map_breakdown",
+        "contributors"
+      ],
+      "properties": {
+        "position": { "type": "integer", "minimum": 1, "maximum": 16 },
+        "team": { "type": "string" },
+        "country": { "type": "string" },
+        "team_score": { "type": "number" },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "map_breakdown": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["map", "map_score", "confidence"],
+            "properties": {
+              "map": { "type": "string" },
+              "map_score": { "type": "number" },
+              "confidence": { "$ref": "#/$defs/confidence" }
+            }
+          }
+        },
+        "contributors": {
+          "description": "Per-player contribution that explains the team's position (FR-005).",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["player", "player_score", "confidence", "maps_played"],
+            "properties": {
+              "player": { "type": "string" },
+              "player_score": { "type": "number" },
+              "confidence": { "$ref": "#/$defs/confidence" },
+              "maps_played": { "type": "integer", "minimum": 0 },
+              "low_history_baseline": { "type": "boolean", "default": false }
+            }
+          }
+        }
+      }
+    }
+  }
+}

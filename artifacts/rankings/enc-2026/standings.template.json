@@ -1,0 +1,42 @@
+{
+  "_README": "POST-TOURNAMENT: replace 'final' with the actual ENC 2026 final standings (best team first), then run:  vctm evaluate --version enc-2026.v2 --standings standings.template.json --baseline roster-tier-seed . The 'final' list below is a PLACEHOLDER (copy of the baseline order), NOT real results.",
+  "source": "https://www.vlr.gg/event/3008/  (fill with the final-standings source after the event)",
+  "final": [
+    "United States of America",
+    "Brazil",
+    "China",
+    "South Korea",
+    "Türkiye",
+    "Canada",
+    "Poland",
+    "Chinese Taipei",
+    "Philippines",
+    "Chile",
+    "Singapore",
+    "Thailand",
+    "Lithuania",
+    "Great Britain",
+    "Finland",
+    "Malaysia"
+  ],
+  "baselines": {
+    "roster-tier-seed": [
+      "United States of America",
+      "Brazil",
+      "China",
+      "South Korea",
+      "Türkiye",
+      "Canada",
+      "Poland",
+      "Chinese Taipei",
+      "Philippines",
+      "Chile",
+      "Singapore",
+      "Thailand",
+      "Lithuania",
+      "Great Britain",
+      "Finland",
+      "Malaysia"
+    ]
+  }
+}
