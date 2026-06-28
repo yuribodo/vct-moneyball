@@ -1,0 +1,1919 @@
+{
+  "config_hash": "3963d8500e3d03ff",
+  "data_window": {
+    "end": "2026-06-28T15:04:24.139355+00:00",
+    "start": "2025-07-03T15:04:24.139355+00:00"
+  },
+  "map_pool": [
+    "Abyss",
+    "Ascent",
+    "Bind",
+    "Breeze",
+    "Corrode",
+    "Fracture",
+    "Haven",
+    "Icebox",
+    "Lotus",
+    "Pearl",
+    "Split",
+    "Sunset"
+  ],
+  "published_at": "2026-06-28T15:04:24.139355+00:00",
+  "supersedes": "enc-2026.v1",
+  "teams": [
+    {
+      "confidence": "medium",
+      "contributors": [
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 76,
+          "player": "CHICHOO",
+          "player_score": 0.3931
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 72,
+          "player": "K1ra",
+          "player_score": 0.3968
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 58,
+          "player": "Knight",
+          "player_score": 0.3817
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 86,
+          "player": "Lysoar",
+          "player_score": 0.3957
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 76,
+          "player": "nobody",
+          "player_score": 0.3446
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 68,
+          "player": "slowly",
+          "player_score": 0.4181
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 68,
+          "player": "ZmjjKK",
+          "player_score": 0.3976
+        }
+      ],
+      "country": "China",
+      "map_breakdown": [
+        {
+          "confidence": "high",
+          "map": "Abyss",
+          "map_score": 0.3561
+        },
+        {
+          "confidence": "high",
+          "map": "Ascent",
+          "map_score": 0.4603
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.366
+        },
+        {
+          "confidence": "high",
+          "map": "Breeze",
+          "map_score": 0.4026
+        },
+        {
+          "confidence": "medium",
+          "map": "Corrode",
+          "map_score": 0.3964
+        },
+        {
+          "confidence": "high",
+          "map": "Fracture",
+          "map_score": 0.4057
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.3906
+        },
+        {
+          "confidence": "low",
+          "map": "Icebox",
+          "map_score": 0.362
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.3923
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.3754
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.3972
+        },
+        {
+          "confidence": "low",
+          "map": "Sunset",
+          "map_score": 0.3859
+        }
+      ],
+      "position": 1,
+      "team": "China",
+      "team_score": 0.3909
+    },
+    {
+      "confidence": "medium",
+      "contributors": [
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 71,
+          "player": "Nicc",
+          "player_score": 0.3863
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 42,
+          "player": "S1Mon",
+          "player_score": 0.4263
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 69,
+          "player": "SpiritZ1",
+          "player_score": 0.3942
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 57,
+          "player": "Spring",
+          "player_score": 0.3842
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 74,
+          "player": "WsLeo",
+          "player_score": 0.3709
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 81,
+          "player": "Yuicaw",
+          "player_score": 0.3982
+        }
+      ],
+      "country": "International",
+      "map_breakdown": [
+        {
+          "confidence": "high",
+          "map": "Abyss",
+          "map_score": 0.3556
+        },
+        {
+          "confidence": "medium",
+          "map": "Ascent",
+          "map_score": 0.4308
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.3958
+        },
+        {
+          "confidence": "high",
+          "map": "Breeze",
+          "map_score": 0.3844
+        },
+        {
+          "confidence": "medium",
+          "map": "Corrode",
+          "map_score": 0.3712
+        },
+        {
+          "confidence": "medium",
+          "map": "Fracture",
+          "map_score": 0.3744
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.4211
+        },
+        {
+          "confidence": "low",
+          "map": "Icebox",
+          "map_score": 0.362
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.3961
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.3706
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.407
+        },
+        {
+          "confidence": "medium",
+          "map": "Sunset",
+          "map_score": 0.4083
+        }
+      ],
+      "position": 2,
+      "team": "Chinese Taipei",
+      "team_score": 0.3898
+    },
+    {
+      "confidence": "medium",
+      "contributors": [
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 70,
+          "player": "david",
+          "player_score": 0.3971
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 41,
+          "player": "erde",
+          "player_score": 0.3917
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 61,
+          "player": "keznit",
+          "player_score": 0.3934
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 92,
+          "player": "kiNgg",
+          "player_score": 0.372
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 66,
+          "player": "Mazino",
+          "player_score": 0.3634
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 70,
+          "player": "Shyy",
+          "player_score": 0.3904
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 57,
+          "player": "tunaso",
+          "player_score": 0.3998
+        }
+      ],
+      "country": "Chile",
+      "map_breakdown": [
+        {
+          "confidence": "high",
+          "map": "Abyss",
+          "map_score": 0.3715
+        },
+        {
+          "confidence": "high",
+          "map": "Ascent",
+          "map_score": 0.3753
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.396
+        },
+        {
+          "confidence": "high",
+          "map": "Breeze",
+          "map_score": 0.3701
+        },
+        {
+          "confidence": "medium",
+          "map": "Corrode",
+          "map_score": 0.3776
+        },
+        {
+          "confidence": "medium",
+          "map": "Fracture",
+          "map_score": 0.3914
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.3869
+        },
+        {
+          "confidence": "low",
+          "map": "Icebox",
+          "map_score": 0.3615
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.3831
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.4164
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.3852
+        },
+        {
+          "confidence": "medium",
+          "map": "Sunset",
+          "map_score": 0.4238
+        }
+      ],
+      "position": 3,
+      "team": "Chile",
+      "team_score": 0.3866
+    },
+    {
+      "confidence": "medium",
+      "contributors": [
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 46,
+          "player": "Deryeon",
+          "player_score": 0.3993
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 37,
+          "player": "JayH",
+          "player_score": 0.3729
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 105,
+          "player": "Jinggg",
+          "player_score": 0.4029
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 67,
+          "player": "nephh",
+          "player_score": 0.393
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 64,
+          "player": "STYRON",
+          "player_score": 0.3729
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 68,
+          "player": "Vera",
+          "player_score": 0.3762
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 73,
+          "player": "wayne",
+          "player_score": 0.3686
+        }
+      ],
+      "country": "Singapore",
+      "map_breakdown": [
+        {
+          "confidence": "medium",
+          "map": "Abyss",
+          "map_score": 0.3682
+        },
+        {
+          "confidence": "high",
+          "map": "Ascent",
+          "map_score": 0.3819
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.3685
+        },
+        {
+          "confidence": "medium",
+          "map": "Breeze",
+          "map_score": 0.393
+        },
+        {
+          "confidence": "high",
+          "map": "Corrode",
+          "map_score": 0.3828
+        },
+        {
+          "confidence": "medium",
+          "map": "Fracture",
+          "map_score": 0.4445
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.3847
+        },
+        {
+          "confidence": "low",
+          "map": "Icebox",
+          "map_score": 0.362
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.3634
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.3933
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.3907
+        },
+        {
+          "confidence": "low",
+          "map": "Sunset",
+          "map_score": 0.3859
+        }
+      ],
+      "position": 4,
+      "team": "Singapore",
+      "team_score": 0.3849
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 64,
+          "player": "aplycs",
+          "player_score": 0.3998
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 105,
+          "player": "d4v41",
+          "player_score": 0.3748
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 60,
+          "player": "Fixy",
+          "player_score": 0.4108
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 50,
+          "player": "Riza",
+          "player_score": 0.3705
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 34,
+          "player": "theDoctorr",
+          "player_score": 0.3768
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 44,
+          "player": "toggle",
+          "player_score": 0.3648
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 66,
+          "player": "Xan",
+          "player_score": 0.3934
+        }
+      ],
+      "country": "Malaysia",
+      "map_breakdown": [
+        {
+          "confidence": "medium",
+          "map": "Abyss",
+          "map_score": 0.3681
+        },
+        {
+          "confidence": "high",
+          "map": "Ascent",
+          "map_score": 0.3864
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.385
+        },
+        {
+          "confidence": "medium",
+          "map": "Breeze",
+          "map_score": 0.3713
+        },
+        {
+          "confidence": "high",
+          "map": "Corrode",
+          "map_score": 0.3701
+        },
+        {
+          "confidence": "high",
+          "map": "Fracture",
+          "map_score": 0.3892
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.3701
+        },
+        {
+          "confidence": "medium",
+          "map": "Icebox",
+          "map_score": 0.3674
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.4104
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.3747
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.4109
+        },
+        {
+          "confidence": "high",
+          "map": "Sunset",
+          "map_score": 0.396
+        }
+      ],
+      "position": 5,
+      "team": "Malaysia",
+      "team_score": 0.3833
+    },
+    {
+      "confidence": "medium",
+      "contributors": [
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 79,
+          "player": "artzin",
+          "player_score": 0.3554
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 64,
+          "player": "aspas",
+          "player_score": 0.413
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 35,
+          "player": "Less",
+          "player_score": 0.3835
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 46,
+          "player": "lukxo",
+          "player_score": 0.3678
+        },
+        {
+          "confidence": "low",
+          "low_history_baseline": true,
+          "maps_played": 2,
+          "player": "Sacy",
+          "player_score": 0.3861
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 90,
+          "player": "Sato",
+          "player_score": 0.3914
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 79,
+          "player": "spike",
+          "player_score": 0.385
+        }
+      ],
+      "country": "Brazil",
+      "map_breakdown": [
+        {
+          "confidence": "medium",
+          "map": "Abyss",
+          "map_score": 0.3735
+        },
+        {
+          "confidence": "high",
+          "map": "Ascent",
+          "map_score": 0.3749
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.3596
+        },
+        {
+          "confidence": "high",
+          "map": "Breeze",
+          "map_score": 0.3553
+        },
+        {
+          "confidence": "low",
+          "map": "Corrode",
+          "map_score": 0.394
+        },
+        {
+          "confidence": "medium",
+          "map": "Fracture",
+          "map_score": 0.395
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.389
+        },
+        {
+          "confidence": "low",
+          "map": "Icebox",
+          "map_score": 0.362
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.4003
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.3919
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.3754
+        },
+        {
+          "confidence": "medium",
+          "map": "Sunset",
+          "map_score": 0.4183
+        }
+      ],
+      "position": 6,
+      "team": "Brazil",
+      "team_score": 0.3824
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 105,
+          "player": "invy",
+          "player_score": 0.3892
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 57,
+          "player": "kellyS",
+          "player_score": 0.3774
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 82,
+          "player": "marky",
+          "player_score": 0.3656
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 73,
+          "player": "PatMen",
+          "player_score": 0.3728
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 65,
+          "player": "Wild0reoo",
+          "player_score": 0.3546
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 79,
+          "player": "xavi8k",
+          "player_score": 0.3742
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 57,
+          "player": "Zeus",
+          "player_score": 0.4353
+        }
+      ],
+      "country": "Philippines",
+      "map_breakdown": [
+        {
+          "confidence": "medium",
+          "map": "Abyss",
+          "map_score": 0.3961
+        },
+        {
+          "confidence": "high",
+          "map": "Ascent",
+          "map_score": 0.3666
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.4062
+        },
+        {
+          "confidence": "high",
+          "map": "Breeze",
+          "map_score": 0.3857
+        },
+        {
+          "confidence": "medium",
+          "map": "Corrode",
+          "map_score": 0.3707
+        },
+        {
+          "confidence": "medium",
+          "map": "Fracture",
+          "map_score": 0.3783
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.3863
+        },
+        {
+          "confidence": "low",
+          "map": "Icebox",
+          "map_score": 0.362
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.3597
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.3858
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.3905
+        },
+        {
+          "confidence": "medium",
+          "map": "Sunset",
+          "map_score": 0.3769
+        }
+      ],
+      "position": 7,
+      "team": "Philippines",
+      "team_score": 0.3804
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 73,
+          "player": "Alfajer",
+          "player_score": 0.3958
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 61,
+          "player": "Lar0k",
+          "player_score": 0.3657
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 67,
+          "player": "RieNs",
+          "player_score": 0.3835
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 60,
+          "player": "Ruxic",
+          "player_score": 0.3906
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 69,
+          "player": "s0pp",
+          "player_score": 0.3918
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 73,
+          "player": "Wo0t",
+          "player_score": 0.365
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 68,
+          "player": "xeus",
+          "player_score": 0.3665
+        }
+      ],
+      "country": "T\u00fcrkiye",
+      "map_breakdown": [
+        {
+          "confidence": "high",
+          "map": "Abyss",
+          "map_score": 0.347
+        },
+        {
+          "confidence": "high",
+          "map": "Ascent",
+          "map_score": 0.3606
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.396
+        },
+        {
+          "confidence": "high",
+          "map": "Breeze",
+          "map_score": 0.3944
+        },
+        {
+          "confidence": "high",
+          "map": "Corrode",
+          "map_score": 0.4045
+        },
+        {
+          "confidence": "high",
+          "map": "Fracture",
+          "map_score": 0.3934
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.3899
+        },
+        {
+          "confidence": "low",
+          "map": "Icebox",
+          "map_score": 0.362
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.3831
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.3714
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.3696
+        },
+        {
+          "confidence": "medium",
+          "map": "Sunset",
+          "map_score": 0.3845
+        }
+      ],
+      "position": 8,
+      "team": "T\u00fcrkiye",
+      "team_score": 0.3797
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 66,
+          "player": "BuZz",
+          "player_score": 0.381
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 73,
+          "player": "Dambi",
+          "player_score": 0.3879
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 73,
+          "player": "Francis",
+          "player_score": 0.3855
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 73,
+          "player": "Ivy",
+          "player_score": 0.366
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 66,
+          "player": "iZu",
+          "player_score": 0.3969
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 64,
+          "player": "Munchkin",
+          "player_score": 0.3627
+        }
+      ],
+      "country": "South Korea",
+      "map_breakdown": [
+        {
+          "confidence": "high",
+          "map": "Abyss",
+          "map_score": 0.3733
+        },
+        {
+          "confidence": "high",
+          "map": "Ascent",
+          "map_score": 0.3813
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.4285
+        },
+        {
+          "confidence": "high",
+          "map": "Breeze",
+          "map_score": 0.3808
+        },
+        {
+          "confidence": "high",
+          "map": "Corrode",
+          "map_score": 0.3429
+        },
+        {
+          "confidence": "medium",
+          "map": "Fracture",
+          "map_score": 0.375
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.381
+        },
+        {
+          "confidence": "low",
+          "map": "Icebox",
+          "map_score": 0.362
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.3897
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.3591
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.3793
+        },
+        {
+          "confidence": "medium",
+          "map": "Sunset",
+          "map_score": 0.389
+        }
+      ],
+      "position": 9,
+      "team": "South Korea",
+      "team_score": 0.3785
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 73,
+          "player": "benjyfishy",
+          "player_score": 0.3591
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 101,
+          "player": "keiko",
+          "player_score": 0.3993
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 67,
+          "player": "Lime",
+          "player_score": 0.4039
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 91,
+          "player": "Sevire",
+          "player_score": 0.3876
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 70,
+          "player": "Ticey",
+          "player_score": 0.3591
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 57,
+          "player": "YaBoiLewis",
+          "player_score": 0.3686
+        }
+      ],
+      "country": "United Kingdom",
+      "map_breakdown": [
+        {
+          "confidence": "high",
+          "map": "Abyss",
+          "map_score": 0.3655
+        },
+        {
+          "confidence": "medium",
+          "map": "Ascent",
+          "map_score": 0.3763
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.3541
+        },
+        {
+          "confidence": "high",
+          "map": "Breeze",
+          "map_score": 0.3528
+        },
+        {
+          "confidence": "medium",
+          "map": "Corrode",
+          "map_score": 0.3961
+        },
+        {
+          "confidence": "high",
+          "map": "Fracture",
+          "map_score": 0.3945
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.3864
+        },
+        {
+          "confidence": "low",
+          "map": "Icebox",
+          "map_score": 0.362
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.3914
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.3939
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.3867
+        },
+        {
+          "confidence": "medium",
+          "map": "Sunset",
+          "map_score": 0.3694
+        }
+      ],
+      "position": 10,
+      "team": "Great Britain",
+      "team_score": 0.3774
+    },
+    {
+      "confidence": "medium",
+      "contributors": [
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 69,
+          "player": "Apinya",
+          "player_score": 0.4009
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 63,
+          "player": "JitBoyS",
+          "player_score": 0.346
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 62,
+          "player": "Kadoom",
+          "player_score": 0.388
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 63,
+          "player": "Killua",
+          "player_score": 0.3598
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 63,
+          "player": "primmie",
+          "player_score": 0.411
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 72,
+          "player": "PTC",
+          "player_score": 0.3648
+        }
+      ],
+      "country": "Thailand",
+      "map_breakdown": [
+        {
+          "confidence": "medium",
+          "map": "Abyss",
+          "map_score": 0.3528
+        },
+        {
+          "confidence": "medium",
+          "map": "Ascent",
+          "map_score": 0.3805
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.3776
+        },
+        {
+          "confidence": "high",
+          "map": "Breeze",
+          "map_score": 0.3891
+        },
+        {
+          "confidence": "medium",
+          "map": "Corrode",
+          "map_score": 0.3935
+        },
+        {
+          "confidence": "medium",
+          "map": "Fracture",
+          "map_score": 0.3634
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.3712
+        },
+        {
+          "confidence": "medium",
+          "map": "Icebox",
+          "map_score": 0.2918
+        },
+        {
+          "confidence": "medium",
+          "map": "Lotus",
+          "map_score": 0.3738
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.415
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.4063
+        },
+        {
+          "confidence": "low",
+          "map": "Sunset",
+          "map_score": 0.4006
+        }
+      ],
+      "position": 11,
+      "team": "Thailand",
+      "team_score": 0.3763
+    },
+    {
+      "confidence": "medium",
+      "contributors": [
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 74,
+          "player": "Derke",
+          "player_score": 0.405
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 96,
+          "player": "Famsii",
+          "player_score": 0.3634
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 74,
+          "player": "H1ber",
+          "player_score": 0.3865
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 67,
+          "player": "hoody",
+          "player_score": 0.3866
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 67,
+          "player": "iluri",
+          "player_score": 0.3623
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 66,
+          "player": "Jamppi",
+          "player_score": 0.3672
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 31,
+          "player": "Snowi",
+          "player_score": 0.3551
+        }
+      ],
+      "country": "Finland",
+      "map_breakdown": [
+        {
+          "confidence": "medium",
+          "map": "Abyss",
+          "map_score": 0.3675
+        },
+        {
+          "confidence": "medium",
+          "map": "Ascent",
+          "map_score": 0.3865
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.3647
+        },
+        {
+          "confidence": "medium",
+          "map": "Breeze",
+          "map_score": 0.3752
+        },
+        {
+          "confidence": "high",
+          "map": "Corrode",
+          "map_score": 0.4027
+        },
+        {
+          "confidence": "medium",
+          "map": "Fracture",
+          "map_score": 0.3837
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.3658
+        },
+        {
+          "confidence": "low",
+          "map": "Icebox",
+          "map_score": 0.362
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.3891
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.378
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.3705
+        },
+        {
+          "confidence": "low",
+          "map": "Sunset",
+          "map_score": 0.3483
+        }
+      ],
+      "position": 12,
+      "team": "Finland",
+      "team_score": 0.3745
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 74,
+          "player": "Cryocells",
+          "player_score": 0.3852
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 94,
+          "player": "Ethan",
+          "player_score": 0.3489
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 84,
+          "player": "leaf",
+          "player_score": 0.3787
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 94,
+          "player": "skuba",
+          "player_score": 0.3587
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 101,
+          "player": "trent",
+          "player_score": 0.3904
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 101,
+          "player": "valyn",
+          "player_score": 0.3888
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 67,
+          "player": "zekken",
+          "player_score": 0.377
+        }
+      ],
+      "country": "United States",
+      "map_breakdown": [
+        {
+          "confidence": "high",
+          "map": "Abyss",
+          "map_score": 0.3688
+        },
+        {
+          "confidence": "high",
+          "map": "Ascent",
+          "map_score": 0.3678
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.3644
+        },
+        {
+          "confidence": "high",
+          "map": "Breeze",
+          "map_score": 0.3785
+        },
+        {
+          "confidence": "high",
+          "map": "Corrode",
+          "map_score": 0.3978
+        },
+        {
+          "confidence": "low",
+          "map": "Fracture",
+          "map_score": 0.3753
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.3843
+        },
+        {
+          "confidence": "low",
+          "map": "Icebox",
+          "map_score": 0.348
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.3869
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.3923
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.3671
+        },
+        {
+          "confidence": "high",
+          "map": "Sunset",
+          "map_score": 0.3594
+        }
+      ],
+      "position": 13,
+      "team": "United States of America",
+      "team_score": 0.3742
+    },
+    {
+      "confidence": "medium",
+      "contributors": [
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 69,
+          "player": "eeiu",
+          "player_score": 0.3524
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 65,
+          "player": "JonahP",
+          "player_score": 0.3662
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 64,
+          "player": "koalanoob",
+          "player_score": 0.3612
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 94,
+          "player": "mada",
+          "player_score": 0.3704
+        },
+        {
+          "confidence": "low",
+          "low_history_baseline": true,
+          "maps_played": 0,
+          "player": "Marved",
+          "player_score": 0.3802
+        },
+        {
+          "confidence": "low",
+          "low_history_baseline": true,
+          "maps_played": 4,
+          "player": "TenZ",
+          "player_score": 0.3861
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 77,
+          "player": "zander",
+          "player_score": 0.3745
+        }
+      ],
+      "country": "Canada",
+      "map_breakdown": [
+        {
+          "confidence": "high",
+          "map": "Abyss",
+          "map_score": 0.3849
+        },
+        {
+          "confidence": "medium",
+          "map": "Ascent",
+          "map_score": 0.3405
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.3835
+        },
+        {
+          "confidence": "high",
+          "map": "Breeze",
+          "map_score": 0.3547
+        },
+        {
+          "confidence": "medium",
+          "map": "Corrode",
+          "map_score": 0.3672
+        },
+        {
+          "confidence": "low",
+          "map": "Fracture",
+          "map_score": 0.4088
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.3898
+        },
+        {
+          "confidence": "low",
+          "map": "Icebox",
+          "map_score": 0.362
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.3376
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.3404
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.3778
+        },
+        {
+          "confidence": "high",
+          "map": "Sunset",
+          "map_score": 0.3563
+        }
+      ],
+      "position": 14,
+      "team": "Canada",
+      "team_score": 0.367
+    },
+    {
+      "confidence": "medium",
+      "contributors": [
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 75,
+          "player": "kaajak",
+          "player_score": 0.3774
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 78,
+          "player": "kamo",
+          "player_score": 0.3758
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 40,
+          "player": "paTiTek",
+          "player_score": 0.3549
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 66,
+          "player": "PROFEK",
+          "player_score": 0.3753
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 63,
+          "player": "starxo",
+          "player_score": 0.3513
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 61,
+          "player": "UNFAKE",
+          "player_score": 0.3487
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 77,
+          "player": "westside",
+          "player_score": 0.351
+        }
+      ],
+      "country": "Poland",
+      "map_breakdown": [
+        {
+          "confidence": "high",
+          "map": "Abyss",
+          "map_score": 0.3586
+        },
+        {
+          "confidence": "high",
+          "map": "Ascent",
+          "map_score": 0.3714
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.3472
+        },
+        {
+          "confidence": "high",
+          "map": "Breeze",
+          "map_score": 0.3403
+        },
+        {
+          "confidence": "high",
+          "map": "Corrode",
+          "map_score": 0.3428
+        },
+        {
+          "confidence": "low",
+          "map": "Fracture",
+          "map_score": 0.386
+        },
+        {
+          "confidence": "medium",
+          "map": "Haven",
+          "map_score": 0.3778
+        },
+        {
+          "confidence": "low",
+          "map": "Icebox",
+          "map_score": 0.362
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.3537
+        },
+        {
+          "confidence": "medium",
+          "map": "Pearl",
+          "map_score": 0.3749
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.3572
+        },
+        {
+          "confidence": "low",
+          "map": "Sunset",
+          "map_score": 0.3736
+        }
+      ],
+      "position": 15,
+      "team": "Poland",
+      "team_score": 0.3621
+    },
+    {
+      "confidence": "medium",
+      "contributors": [
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 73,
+          "player": "Boo",
+          "player_score": 0.3412
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 62,
+          "player": "Destrian",
+          "player_score": 0.3445
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 72,
+          "player": "Kajuks",
+          "player_score": 0.3467
+        },
+        {
+          "confidence": "high",
+          "low_history_baseline": false,
+          "maps_played": 65,
+          "player": "koshmaras",
+          "player_score": 0.3743
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 65,
+          "player": "MiniBoo",
+          "player_score": 0.3797
+        },
+        {
+          "confidence": "medium",
+          "low_history_baseline": false,
+          "maps_played": 60,
+          "player": "roxie",
+          "player_score": 0.3087
+        },
+        {
+          "confidence": "low",
+          "low_history_baseline": true,
+          "maps_played": 1,
+          "player": "vakk",
+          "player_score": 0.3903
+        }
+      ],
+      "country": "Lithuania",
+      "map_breakdown": [
+        {
+          "confidence": "medium",
+          "map": "Abyss",
+          "map_score": 0.3272
+        },
+        {
+          "confidence": "high",
+          "map": "Ascent",
+          "map_score": 0.359
+        },
+        {
+          "confidence": "high",
+          "map": "Bind",
+          "map_score": 0.3247
+        },
+        {
+          "confidence": "high",
+          "map": "Breeze",
+          "map_score": 0.3549
+        },
+        {
+          "confidence": "high",
+          "map": "Corrode",
+          "map_score": 0.3489
+        },
+        {
+          "confidence": "high",
+          "map": "Fracture",
+          "map_score": 0.3508
+        },
+        {
+          "confidence": "high",
+          "map": "Haven",
+          "map_score": 0.3711
+        },
+        {
+          "confidence": "low",
+          "map": "Icebox",
+          "map_score": 0.362
+        },
+        {
+          "confidence": "high",
+          "map": "Lotus",
+          "map_score": 0.3323
+        },
+        {
+          "confidence": "high",
+          "map": "Pearl",
+          "map_score": 0.3755
+        },
+        {
+          "confidence": "high",
+          "map": "Split",
+          "map_score": 0.3312
+        },
+        {
+          "confidence": "low",
+          "map": "Sunset",
+          "map_score": 0.3618
+        }
+      ],
+      "position": 16,
+      "team": "Lithuania",
+      "team_score": 0.3499
+    }
+  ],
+  "tournament_start": "2026-11-08T18:00:00+00:00",
+  "version": "enc-2026.v2"
+}
