@@ -46,6 +46,8 @@ def predict(
         p_b=round(pred.p_b, 4),
         winner=pred.winner,
         low_confidence=pred.low_confidence,
+        elo_a=round(pred.elo_a, 1),
+        elo_b=round(pred.elo_b, 1),
         contributors_a=pred.contributors_a,
         contributors_b=pred.contributors_b,
         provenance=Provenance(source="model_run", as_of=as_of_dt.isoformat()),

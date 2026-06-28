@@ -8,11 +8,17 @@ unhandled 500 (FR-007).
 
 from __future__ import annotations
 
+import os
+
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from vct_moneyball.api.routes import evaluation, health, predict, ranking
+from vct_moneyball.api.routes import evaluation, health, matrix, predict, ranking, team
 from vct_moneyball.common.logging import CliError
+
+# Any localhost/127.0.0.1 port in dev (Next may fall back to :3001, :3002, …).
+_DEV_ORIGIN_REGEX = r"https?://(localhost|127\.0\.0\.1)(:\d+)?"
 
 
 def create_app() -> FastAPI:
@@ -20,6 +26,21 @@ def create_app() -> FastAPI:
         title="ENC Prediction API",
         version="0.1.0",
         summary="Read-only serving of ENC rankings, predictions, and honest evaluations.",
+    )
+
+    # The simulator + bracket fetch from the browser, so the web origin needs CORS.
+    # In prod, pin exact origins via ENC_API_CORS_ORIGINS; otherwise allow local dev ports.
+    explicit = os.environ.get("ENC_API_CORS_ORIGINS")
+    cors_kwargs: dict = (
+        {"allow_origins": [o.strip() for o in explicit.split(",") if o.strip()]}
+        if explicit
+        else {"allow_origin_regex": _DEV_ORIGIN_REGEX}
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_methods=["GET"],
+        allow_headers=["*"],
+        **cors_kwargs,
     )
 
     @app.exception_handler(HTTPException)
@@ -45,6 +66,8 @@ def create_app() -> FastAPI:
     app.include_router(ranking.router)
     app.include_router(predict.router)
     app.include_router(evaluation.router)
+    app.include_router(team.router)
+    app.include_router(matrix.router)
     return app
 
 
