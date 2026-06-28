@@ -51,6 +51,13 @@ class ParsedMap:
     players: list[ParsedPlayerStat] = field(default_factory=list)
 
 
+@dataclass(frozen=True)
+class ParsedTeam:
+    name: str
+    vlr_team_id: str | None
+    team_url: str | None
+
+
 @dataclass
 class ParsedMatch:
     vlr_match_id: str
@@ -60,6 +67,12 @@ class ParsedMatch:
     maps: list[ParsedMap]
     source_url: str
     captured_at: datetime
+    # Match identity + outcome (header). None when the page has no parseable result.
+    team_a: ParsedTeam | None = None
+    team_b: ParsedTeam | None = None
+    score_a: int | None = None
+    score_b: int | None = None
+    winner_vlr_team_id: str | None = None
 
 
 def _num(text: str | None) -> float | None:
@@ -152,12 +165,55 @@ def _parse_player_row(
     )
 
 
+def _parse_header_result(
+    soup: BeautifulSoup,
+) -> tuple[ParsedTeam | None, ParsedTeam | None, int | None, int | None, str | None]:
+    """Parse the two teams + series score + winner from the match header."""
+    header = soup.select_one(".match-header-vs")
+    if header is None:
+        return None, None, None, None, None
+
+    teams: list[ParsedTeam] = []
+    for link in header.select("a.match-header-link"):
+        href = str(link.get("href", ""))
+        m = re.search(r"/team/(\d+)/", href)
+        name_el = link.select_one(".wf-title-med")
+        name = name_el.get_text(strip=True) if name_el else link.get_text(" ", strip=True)
+        teams.append(
+            ParsedTeam(
+                name=name,
+                vlr_team_id=m.group(1) if m else None,
+                team_url=href.split("?")[0].rstrip("/") if href else None,
+            )
+        )
+    team_a = teams[0] if len(teams) >= 1 else None
+    team_b = teams[1] if len(teams) >= 2 else None
+
+    # Score spans appear in team order (A then B), tagged winner/loser.
+    spans = soup.select(
+        ".match-header-vs-score .match-header-vs-score-winner, "
+        ".match-header-vs-score .match-header-vs-score-loser"
+    )
+    score_a = score_b = None
+    if len(spans) >= 2:
+        score_a = _int(spans[0].get_text(strip=True))
+        score_b = _int(spans[1].get_text(strip=True))
+
+    winner_vlr: str | None = None
+    if score_a is not None and score_b is not None and score_a != score_b:
+        winner = team_a if score_a > score_b else team_b
+        winner_vlr = winner.vlr_team_id if winner else None
+    return team_a, team_b, score_a, score_b, winner_vlr
+
+
 def parse_match(html: str, *, source_url: str, captured_at: datetime) -> ParsedMatch:
     """Parse a VLR.gg match page into a :class:`ParsedMatch`."""
     soup = BeautifulSoup(html, "html.parser")
 
     event_el = soup.select_one(".match-header-event div[style*='font-weight: 700']")
     event = event_el.get_text(" ", strip=True) if event_el else ""
+
+    team_a, team_b, score_a, score_b, winner_vlr = _parse_header_result(soup)
 
     played_at: datetime | None = None
     ts_el = soup.select_one("[data-utc-ts]")
@@ -198,4 +254,9 @@ def parse_match(html: str, *, source_url: str, captured_at: datetime) -> ParsedM
         maps=maps,
         source_url=source_url,
         captured_at=captured_at,
+        team_a=team_a,
+        team_b=team_b,
+        score_a=score_a,
+        score_b=score_b,
+        winner_vlr_team_id=winner_vlr,
     )

@@ -1,0 +1,115 @@
+"""Evaluation report: build, schema-validate, render, write.
+
+Mirrors the feature-001 artifact discipline: the report is the traceable record of a
+baseline-relative evaluation, validated against ``contracts/eval-report.schema.json``.
+"""
+
+from __future__ import annotations
+
+import json
+import pathlib
+from datetime import datetime
+from functools import lru_cache
+from typing import Any
+
+import jsonschema
+
+from vct_moneyball.common.logging import CliError
+from vct_moneyball.predict.evaluate import Metrics
+
+_SCHEMA_REL = pathlib.PurePath(
+    "specs", "002-winrate-predictor", "contracts", "eval-report.schema.json"
+)
+
+
+def _repo_root() -> pathlib.Path:
+    for base in [pathlib.Path.cwd(), *pathlib.Path(__file__).resolve().parents]:
+        if (base / _SCHEMA_REL).is_file():
+            return base
+    raise CliError(f"could not locate {_SCHEMA_REL}")
+
+
+@lru_cache(maxsize=1)
+def _schema() -> dict[str, Any]:
+    return json.loads((_repo_root() / _SCHEMA_REL).read_text())
+
+
+def build_report(
+    *,
+    run_id: str,
+    created_at: datetime,
+    cutoff: datetime,
+    data_window: tuple[datetime, datetime],
+    feature_fingerprint: str,
+    learner: str,
+    n_train: int,
+    n_eval: int,
+    underpowered: bool,
+    model: Metrics,
+    baselines: list[tuple[str, Metrics]],
+) -> dict[str, Any]:
+    return {
+        "run_id": run_id,
+        "created_at": created_at.isoformat(),
+        "cutoff": cutoff.isoformat(),
+        "data_window": {"start": data_window[0].isoformat(), "end": data_window[1].isoformat()},
+        "feature_fingerprint": feature_fingerprint,
+        "learner": learner,
+        "n_train": n_train,
+        "n_eval": n_eval,
+        "underpowered": underpowered,
+        "leakage_verified": True,
+        "model": model.as_dict(),
+        "baselines": [{"label": label, "metrics": m.as_dict()} for label, m in baselines],
+    }
+
+
+def validate_report(report: dict[str, Any]) -> None:
+    try:
+        jsonschema.validate(report, _schema())
+    except jsonschema.ValidationError as exc:
+        raise CliError(f"eval report failed schema validation: {exc.message}") from exc
+
+
+def render_markdown(report: dict[str, Any]) -> str:
+    lines = [
+        "# Winrate Model Evaluation",
+        "",
+        f"- Run: `{report['run_id']}`  ·  Learner: `{report['learner']}`",
+        f"- Cutoff: `{report['cutoff']}`  ·  Train/Eval: {report['n_train']}/{report['n_eval']}"
+        + ("  ⚠️ underpowered" if report.get("underpowered") else ""),
+        f"- Data window: `{report['data_window']['start']}` → `{report['data_window']['end']}`",
+        f"- Feature fingerprint: `{report['feature_fingerprint']}`  ·  leakage verified: "
+        f"{report['leakage_verified']}",
+        "",
+        "| Predictor | log-loss | accuracy | Brier | calib. err |",
+        "|-----------|---------:|---------:|------:|-----------:|",
+    ]
+    m = report["model"]
+    lines.append(
+        f"| **model** | {m['log_loss']:.4f} | {m['accuracy']:.4f} | {m['brier']:.4f} | "
+        f"{m['calibration_error']:.4f} |"
+    )
+    for b in report["baselines"]:
+        bm = b["metrics"]
+        lines.append(
+            f"| {b['label']} | {bm['log_loss']:.4f} | {bm['accuracy']:.4f} | {bm['brier']:.4f} | "
+            f"{bm['calibration_error']:.4f} |"
+        )
+    best_baseline = min(report["baselines"], key=lambda b: b["metrics"]["log_loss"])
+    verdict = "beats" if m["log_loss"] < best_baseline["metrics"]["log_loss"] else "does NOT beat"
+    lines += [
+        "",
+        f"On log-loss, the model **{verdict}** its best baseline (`{best_baseline['label']}`).",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def write_report(report: dict[str, Any], out_dir: pathlib.Path) -> pathlib.Path:
+    target = out_dir / report["run_id"]
+    if target.exists():
+        raise CliError(f"refusing to overwrite existing report dir: {target}")
+    target.mkdir(parents=True)
+    (target / "report.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+    (target / "report.md").write_text(render_markdown(report))
+    return target

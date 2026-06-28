@@ -42,7 +42,9 @@ class Team(Base):
 
     id: Mapped[int] = _pk()
     name: Mapped[str] = mapped_column(Text, nullable=False)
-    country: Mapped[str] = mapped_column(Text, nullable=False)
+    # NULL for non-ENC clubs (backfilled opponents); Postgres treats NULLs as distinct in
+    # uq_team_name_country, so same-named clubs with different VLR ids never collide.
+    country: Mapped[str | None] = mapped_column(Text, nullable=True)
     vlr_team_id: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_enc_2026: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     source_url: Mapped[str] = mapped_column(Text, nullable=False)
@@ -105,6 +107,18 @@ class Match(Base):
     vlr_match_id: Mapped[str] = mapped_column(Text, nullable=False)
     event: Mapped[str] = mapped_column(Text, nullable=False)
     played_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    # Match identity + outcome (Phase 2; nullable — backfilled offline from cached HTML).
+    team_a_id: Mapped[int | None] = mapped_column(
+        ForeignKey("team.id", ondelete="SET NULL"), nullable=True
+    )
+    team_b_id: Mapped[int | None] = mapped_column(
+        ForeignKey("team.id", ondelete="SET NULL"), nullable=True
+    )
+    winner_team_id: Mapped[int | None] = mapped_column(
+        ForeignKey("team.id", ondelete="SET NULL"), nullable=True
+    )
+    score_a: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    score_b: Mapped[int | None] = mapped_column(Integer, nullable=True)
     source_url: Mapped[str] = mapped_column(Text, nullable=False)
     captured_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
@@ -112,6 +126,9 @@ class Match(Base):
         UniqueConstraint("vlr_match_id", name="uq_match_vlr_id"),
         Index("ix_match_played_at", "played_at"),
         Index("ix_match_event", "event"),
+        Index("ix_match_team_a_id", "team_a_id"),
+        Index("ix_match_team_b_id", "team_b_id"),
+        Index("ix_match_winner_team_id", "winner_team_id"),
     )
 
 

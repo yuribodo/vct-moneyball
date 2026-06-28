@@ -1,7 +1,8 @@
 CORE := services/core
 GROUPS := --group scraping --group ml
 
-.PHONY: help setup sync up down logs lint fmt test migrate collect build-ranking evaluate
+.PHONY: help setup sync up down logs lint fmt test migrate collect build-ranking evaluate \
+	backfill-results train-winrate eval-winrate predict-match
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -42,3 +43,15 @@ build-ranking: ## vctm build-ranking (pass ARGS="--version ... --tournament-star
 
 evaluate: ## vctm evaluate (pass ARGS="--version ... --standings ...")
 	cd $(CORE) && uv run $(GROUPS) vctm evaluate $(ARGS)
+
+backfill-results: ## vctm backfill-results (offline match outcomes from cache)
+	cd $(CORE) && uv run $(GROUPS) vctm backfill-results $(ARGS)
+
+train-winrate: ## vctm train-winrate (pass ARGS="--cutoff ...")
+	cd $(CORE) && uv run $(GROUPS) vctm train-winrate $(ARGS)
+
+eval-winrate: ## vctm eval-winrate (pass ARGS="--cutoff ...")
+	cd $(CORE) && uv run $(GROUPS) vctm eval-winrate $(ARGS)
+
+predict-match: ## vctm predict-match (pass ARGS="--team-a ... --team-b ...")
+	cd $(CORE) && uv run $(GROUPS) vctm predict-match $(ARGS)

@@ -11,6 +11,7 @@ from datetime import UTC, datetime, timedelta
 
 from sqlalchemy.orm import Session
 
+from vct_moneyball.store.models import Match
 from vct_moneyball.store.repositories import Repositories
 
 MAP_POOL = ["Ascent", "Bind", "Haven", "Lotus", "Split", "Icebox", "Sunset"]
@@ -75,3 +76,55 @@ def seed_cohort(session: Session, *, now: datetime | None = None, maps_per_pair:
                         assists=5,
                     )
     session.flush()
+
+
+def seed_labeled_matches(
+    session: Session, *, n_teams: int = 8, n_matches: int = 120, now: datetime | None = None
+) -> datetime:
+    """Seed teams + labeled matches with learnable outcomes; return a mid cutoff.
+
+    Each team has a hidden strength; the stronger side wins deterministically (with a
+    light alternation so both classes appear), dated across a window so a temporal split
+    has matches on both sides. Returns a cutoff with matches before and after it.
+    """
+    now = now or datetime.now(UTC)
+    repos = Repositories(session)
+    team_ids: list[int] = []
+    for i in range(n_teams):
+        team_ids.append(
+            repos.upsert_team(
+                name=f"WTeam{i:02d}",
+                country=f"W{i:02d}",
+                source_url=SRC,
+                captured_at=now,
+                vlr_team_id=f"w{i}",
+                is_enc_2026=False,
+            )
+        )
+    strength = {tid: i for i, tid in enumerate(team_ids)}  # higher index = stronger
+
+    start = now - timedelta(days=240)
+    for k in range(n_matches):
+        a = team_ids[k % n_teams]
+        b = team_ids[(k * 3 + 1) % n_teams]
+        if a == b:
+            b = team_ids[(k + 1) % n_teams]
+        played = start + timedelta(days=k * 240 / n_matches)
+        stronger = a if strength[a] >= strength[b] else b
+        # 85% of the time the stronger team wins (learnable signal + some upsets).
+        winner = stronger if (k % 20) < 17 else (b if stronger == a else a)
+        m = Match(
+            vlr_match_id=f"wm_{k}",
+            event="Seed League",
+            played_at=played,
+            source_url=SRC,
+            captured_at=now,
+            team_a_id=a,
+            team_b_id=b,
+            winner_team_id=winner,
+            score_a=2 if winner == a else 1,
+            score_b=2 if winner == b else 1,
+        )
+        session.add(m)
+    session.flush()
+    return start + timedelta(days=150)  # cutoff with matches on both sides
