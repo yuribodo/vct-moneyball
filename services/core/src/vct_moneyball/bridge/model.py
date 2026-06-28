@@ -33,6 +33,20 @@ class TeamView:
     contributors: list[tuple[str, float]]  # (handle, elo), strongest first
 
 
+@dataclass(frozen=True)
+class MatchupPrediction:
+    team_a: str
+    team_b: str
+    p_a: float
+    p_b: float
+    winner: str
+    low_confidence: bool
+    elo_a: float
+    elo_b: float
+    contributors_a: list[str]
+    contributors_b: list[str]
+
+
 def active_roster(session: Session, team_id: int) -> list[tuple[int, str]]:
     rows = session.execute(
         select(Player.id, Player.handle)
@@ -102,3 +116,47 @@ def team_views_as_of(
         name = session.get(Team, team_id).name
         views[team_id] = TeamView(team_id, name, strength, contributors)
     return views
+
+
+def predict_matchup(
+    session: Session,
+    team_a_ref: str,
+    team_b_ref: str,
+    *,
+    as_of: datetime,
+    lookback_months: int = 12,
+    aggregation: str = "mean",
+    cfg: PlayerRatingConfig | None = None,
+) -> MatchupPrediction:
+    """Predict a matchup — the single code path shared by the CLI and the API."""
+    from vct_moneyball.bridge.features import matchup_features
+
+    cfg = cfg or PlayerRatingConfig()
+    a_id, a_name = resolve_team(session, team_a_ref)
+    b_id, b_name = resolve_team(session, team_b_ref)
+    model = train_bridge(
+        session, as_of=as_of, lookback_months=lookback_months, cfg=cfg, aggregation=aggregation
+    )
+    views = team_views_as_of(
+        session,
+        [a_id, b_id],
+        as_of=as_of,
+        lookback_months=lookback_months,
+        cfg=cfg,
+        aggregation=aggregation,
+    )
+    va, vb = views[a_id], views[b_id]
+    p_a = model.predict_proba_a(matchup_features(va.strength, vb.strength))
+    p_b = 1.0 - p_a
+    return MatchupPrediction(
+        team_a=a_name,
+        team_b=b_name,
+        p_a=p_a,
+        p_b=p_b,
+        winner=a_name if p_a >= p_b else b_name,
+        low_confidence=not (va.strength.is_confident and vb.strength.is_confident),
+        elo_a=va.strength.elo,
+        elo_b=vb.strength.elo,
+        contributors_a=[h for h, _ in va.contributors[:3]],
+        contributors_b=[h for h, _ in vb.contributors[:3]],
+    )

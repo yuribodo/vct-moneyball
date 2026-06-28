@@ -38,6 +38,7 @@ data = ["dvc>=3.50"]
 api = [
     "fastapi>=0.111",
     "uvicorn[standard]>=0.30",
+    "httpx>=0.27",
 ]
 # `dev` is installed by default (see tool.uv.default-groups).
 dev = [
@@ -66,6 +67,8 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 [tool.ruff.lint.per-file-ignores]
 # Alembic autogenerates wide DDL lines; don't reflow generated migrations.
 "alembic/versions/*.py" = ["E501"]
+# FastAPI's `Depends(...)` in argument defaults is the idiomatic injection pattern.
+"src/vct_moneyball/api/routes/*.py" = ["B008"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

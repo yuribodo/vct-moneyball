@@ -1,9 +1,9 @@
 CORE := services/core
-GROUPS := --group scraping --group ml
+GROUPS := --group scraping --group ml --group api
 
 .PHONY: help setup sync up down logs lint fmt test migrate collect build-ranking evaluate \
 	backfill-results train-winrate eval-winrate predict-match \
-	backfill-sides eval-bridge enc-predict enc-ranking
+	backfill-sides eval-bridge enc-predict enc-ranking serve
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -68,3 +68,6 @@ enc-predict: ## vctm enc-predict (pass ARGS="--team-a ... --team-b ...")
 
 enc-ranking: ## vctm enc-ranking (pass ARGS="--as-of ... --version ...")
 	cd $(CORE) && uv run $(GROUPS) vctm enc-ranking $(ARGS)
+
+serve: ## Run the read-only prediction API (http://127.0.0.1:8000/docs)
+	cd $(CORE) && uv run $(GROUPS) vctm serve $(ARGS)
