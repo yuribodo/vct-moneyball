@@ -89,6 +89,42 @@ def build_parser() -> argparse.ArgumentParser:
     p_pred.add_argument("--lookback-months", type=int, default=12)
     p_pred.add_argument("--run", type=str, default=None, help="MLflow run id (default latest)")
 
+    # vctm backfill-sides
+    p_sides = sub.add_parser(
+        "backfill-sides", help="attribute each player to their match side (offline)"
+    )
+    _add_common(p_sides)
+    p_sides.add_argument("--use-cache", dest="use_cache", action="store_true", default=True)
+
+    # vctm eval-bridge
+    p_eb = sub.add_parser("eval-bridge", help="evaluate roster-derived strength vs baselines")
+    _add_common(p_eb)
+    p_eb.add_argument("--cutoff", required=True, type=str)
+    p_eb.add_argument("--lookback-months", type=int, default=12)
+    p_eb.add_argument("--aggregation", choices=["mean", "topk"], default="mean")
+    p_eb.add_argument("--baseline", action="append", default=None, help="repeatable")
+    p_eb.add_argument("--experiment", type=str, default="bridge")
+    p_eb.add_argument("--out-dir", type=str, default=None)
+
+    # vctm enc-predict
+    p_ep = sub.add_parser("enc-predict", help="predict an ENC matchup from roster strength")
+    _add_common(p_ep)
+    p_ep.add_argument("--team-a", required=True, type=str)
+    p_ep.add_argument("--team-b", required=True, type=str)
+    p_ep.add_argument("--as-of", type=str, default=None)
+    p_ep.add_argument("--lookback-months", type=int, default=12)
+    p_ep.add_argument("--aggregation", choices=["mean", "topk"], default="mean")
+    p_ep.add_argument("--run", type=str, default=None)
+
+    # vctm enc-ranking
+    p_er = sub.add_parser("enc-ranking", help="roster-derived ranking of the 16 ENC teams")
+    _add_common(p_er)
+    p_er.add_argument("--as-of", type=str, default=None)
+    p_er.add_argument("--lookback-months", type=int, default=12)
+    p_er.add_argument("--aggregation", choices=["mean", "topk"], default="mean")
+    p_er.add_argument("--out-dir", type=str, default=None)
+    p_er.add_argument("--version", type=str, default=None)
+
     # vctm evaluate
     p_eval = sub.add_parser("evaluate", help="compare a locked ranking to final standings")
     _add_common(p_eval)
@@ -136,6 +172,22 @@ def main(argv: Sequence[str] | None = None) -> int:
             from vct_moneyball.cli.predict_match import run_predict_match
 
             return run_predict_match(args)
+        if args.command == "backfill-sides":
+            from vct_moneyball.cli.backfill_sides import run_backfill_sides
+
+            return run_backfill_sides(args)
+        if args.command == "eval-bridge":
+            from vct_moneyball.cli.eval_bridge import run_eval_bridge
+
+            return run_eval_bridge(args)
+        if args.command == "enc-predict":
+            from vct_moneyball.cli.enc_predict import run_enc_predict
+
+            return run_enc_predict(args)
+        if args.command == "enc-ranking":
+            from vct_moneyball.cli.enc_ranking import run_enc_ranking
+
+            return run_enc_ranking(args)
         if args.command == "evaluate":
             from vct_moneyball.cli.evaluate import run_evaluate
 

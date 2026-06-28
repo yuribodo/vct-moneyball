@@ -99,6 +99,24 @@ Reports land in `artifacts/models/winrate/<run>/` (JSON validated against
 match's signals use only data dated before it; the temporal split is verified) and a
 model that does not beat its baseline is reported as such.
 
+## Roster-strength bridge (feature 003)
+
+Derives each ENC national team's strength from its **active roster's club performance**
+(a chronological per-player Elo), so the predictor gives **confident, differentiated**
+ENC matchups instead of ~50/50. See `specs/003-roster-strength-bridge/`.
+
+```bash
+uv run vctm backfill-sides             # offline: attribute each player to its match side
+uv run vctm eval-bridge --cutoff 2026-04-01     # honest eval vs baselines (held-out club matches)
+uv run vctm enc-predict --team-a "United States of America" --team-b "Brazil" --as-of 2026-11-08
+uv run vctm enc-ranking --as-of 2026-11-08 --version enc-2026.bridge.v1
+```
+
+Player ratings are **leakage-free** (each match's strengths use only prior matches; the
+temporal split is verified), sparse rosters are flagged low-confidence (never guessed), and
+`enc-predict` names the top contributing players. Reports/rankings land under
+`artifacts/models/bridge/`.
+
 ## Quality gates (Constitution III)
 
 ```bash
