@@ -29,8 +29,46 @@ export type Prediction = {
   p_b: number;
   winner: string;
   low_confidence: boolean;
+  elo_a: number;
+  elo_b: number;
   contributors_a: string[];
   contributors_b: string[];
+  provenance: Provenance;
+};
+
+export type TeamContributor = {
+  player: string;
+  player_score: number;
+  maps_played: number;
+  confidence: string;
+  low_history_baseline: boolean;
+};
+export type TeamMapScore = { map: string; map_score: number; confidence: string };
+export type TeamDetail = {
+  team: string;
+  country: string | null;
+  position: number;
+  team_score: number;
+  roster_elo: number | null;
+  confidence: string;
+  contributors: TeamContributor[];
+  map_breakdown: TeamMapScore[];
+  provenance: Provenance;
+};
+
+export type MatrixTeam = {
+  team: string;
+  position: number;
+  elo: number;
+  confidence: string;
+  contributors: string[];
+  country: string | null;
+};
+export type Matrix = {
+  as_of: string;
+  aggregation: string;
+  teams: MatrixTeam[];
+  p: number[][];
   provenance: Provenance;
 };
 
@@ -89,4 +127,12 @@ export const api = {
         (asOf ? `&as_of=${encodeURIComponent(asOf)}` : ""),
     ),
   evaluation: (kind = "bridge") => get<Evaluation>(`/enc/evaluation?kind=${kind}`),
+  team: (name: string, version?: string) =>
+    get<TeamDetail>(
+      `/enc/team/${encodeURIComponent(name)}` + (version ? `?version=${version}` : ""),
+    ),
+  matrix: (asOf?: string, aggregation = "mean") =>
+    get<Matrix>(
+      `/enc/matrix?aggregation=${aggregation}` + (asOf ? `&as_of=${encodeURIComponent(asOf)}` : ""),
+    ),
 };

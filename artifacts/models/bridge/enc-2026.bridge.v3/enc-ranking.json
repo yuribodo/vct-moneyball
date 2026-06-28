@@ -1,0 +1,215 @@
+{
+  "aggregation": "mean",
+  "as_of": "2026-11-08T00:00:00+00:00",
+  "teams": [
+    {
+      "confidence": "high",
+      "contributors": [
+        "Dambi",
+        "Ivy",
+        "Francis",
+        "Munchkin",
+        "iZu"
+      ],
+      "position": 1,
+      "roster_elo": 1605.1,
+      "team": "South Korea"
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        "CHICHOO",
+        "Lysoar",
+        "K1ra",
+        "nobody",
+        "ZmjjKK"
+      ],
+      "position": 2,
+      "roster_elo": 1570.9,
+      "team": "China"
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        "valyn",
+        "skuba",
+        "Ethan",
+        "trent",
+        "leaf"
+      ],
+      "position": 3,
+      "roster_elo": 1568.7,
+      "team": "United States of America"
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        "keiko",
+        "Lime",
+        "benjyfishy",
+        "Sevire",
+        "Ticey"
+      ],
+      "position": 4,
+      "roster_elo": 1561.7,
+      "team": "Great Britain"
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        "Derke",
+        "iluri",
+        "Jamppi",
+        "hoody",
+        "Famsii"
+      ],
+      "position": 5,
+      "roster_elo": 1552.4,
+      "team": "Finland"
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        "Jinggg",
+        "STYRON",
+        "Vera",
+        "JayH",
+        "Deryeon"
+      ],
+      "position": 6,
+      "roster_elo": 1549.4,
+      "team": "Singapore"
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        "d4v41",
+        "Xan",
+        "aplycs",
+        "theDoctorr",
+        "Riza"
+      ],
+      "position": 7,
+      "roster_elo": 1545.4,
+      "team": "Malaysia"
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        "spike",
+        "Sato",
+        "aspas",
+        "Sacy",
+        "Less"
+      ],
+      "position": 8,
+      "roster_elo": 1537.8,
+      "team": "Brazil"
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        "invy",
+        "xavi8k",
+        "Wild0reoo",
+        "marky",
+        "PatMen"
+      ],
+      "position": 9,
+      "roster_elo": 1537.4,
+      "team": "Philippines"
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        "kiNgg",
+        "Shyy",
+        "david",
+        "erde",
+        "Mazino"
+      ],
+      "position": 10,
+      "roster_elo": 1533.5,
+      "team": "Chile"
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        "RieNs",
+        "s0pp",
+        "Wo0t",
+        "Lar0k",
+        "Alfajer"
+      ],
+      "position": 11,
+      "roster_elo": 1532.2,
+      "team": "T\u00fcrkiye"
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        "Apinya",
+        "Kadoom",
+        "PTC",
+        "primmie",
+        "Killua"
+      ],
+      "position": 12,
+      "roster_elo": 1527.1,
+      "team": "Thailand"
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        "PROFEK",
+        "starxo",
+        "UNFAKE",
+        "kaajak",
+        "paTiTek"
+      ],
+      "position": 13,
+      "roster_elo": 1526.9,
+      "team": "Poland"
+    },
+    {
+      "confidence": "medium",
+      "contributors": [
+        "mada",
+        "zander",
+        "JonahP",
+        "TenZ",
+        "Marved"
+      ],
+      "position": 14,
+      "roster_elo": 1514.5,
+      "team": "Canada"
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        "Boo",
+        "koshmaras",
+        "Kajuks",
+        "MiniBoo",
+        "roxie"
+      ],
+      "position": 15,
+      "roster_elo": 1511.9,
+      "team": "Lithuania"
+    },
+    {
+      "confidence": "high",
+      "contributors": [
+        "WsLeo",
+        "S1Mon",
+        "SpiritZ1",
+        "Yuicaw",
+        "Nicc"
+      ],
+      "position": 16,
+      "roster_elo": 1468.1,
+      "team": "Chinese Taipei"
+    }
+  ],
+  "version": "enc-2026.bridge.v3"
+}
