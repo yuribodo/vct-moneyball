@@ -11,7 +11,7 @@ from datetime import UTC, datetime, timedelta
 
 from sqlalchemy.orm import Session
 
-from vct_moneyball.store.models import Match
+from vct_moneyball.store.models import Match, MatchMap, PlayerMapStat
 from vct_moneyball.store.repositories import Repositories
 
 MAP_POOL = ["Ascent", "Bind", "Haven", "Lotus", "Split", "Icebox", "Sunset"]
@@ -128,3 +128,92 @@ def seed_labeled_matches(
         session.add(m)
     session.flush()
     return start + timedelta(days=150)  # cutoff with matches on both sides
+
+
+def seed_attributed_matches(
+    session: Session,
+    *,
+    n_teams: int = 8,
+    roster_size: int = 5,
+    n_matches: int = 120,
+    enc_teams: int = 0,
+    now: datetime | None = None,
+) -> datetime:
+    """Seed teams, rosters, and matches with attributed player sides + learnable outcomes.
+
+    Each team has a hidden strength; stronger side usually wins. Every match writes a
+    match_map and one player_map_stat per lineup player with team_id set (attributed). The
+    first ``enc_teams`` teams are flagged ENC. Returns a mid cutoff with matches on both sides.
+    """
+    now = now or datetime.now(UTC)
+    repos = Repositories(session)
+    map_id = repos.upsert_map(name="Ascent")
+    teams: list[int] = []
+    roster: dict[int, list[int]] = {}
+    for i in range(n_teams):
+        tid = repos.upsert_team(
+            name=f"BTeam{i:02d}",
+            country=f"B{i:02d}",
+            source_url=SRC,
+            captured_at=now,
+            vlr_team_id=f"b{i}",
+            is_enc_2026=(i < enc_teams),
+        )
+        teams.append(tid)
+        roster[tid] = []
+        for j in range(roster_size):
+            pid = repos.upsert_player(
+                handle=f"b{i}p{j}", vlr_player_id=f"b{i}_{j}", source_url=SRC, captured_at=now
+            )
+            repos.upsert_team_player(
+                team_id=tid, player_id=pid, source_url=SRC, captured_at=now, is_active=True
+            )
+            roster[tid].append(pid)
+    strength = {tid: i for i, tid in enumerate(teams)}
+
+    start = now - timedelta(days=240)
+    for k in range(n_matches):
+        a = teams[k % n_teams]
+        b = teams[(k * 3 + 1) % n_teams]
+        if a == b:
+            b = teams[(k + 1) % n_teams]
+        played = start + timedelta(days=k * 240 / n_matches)
+        stronger = a if strength[a] >= strength[b] else b
+        winner = stronger if (k % 20) < 17 else (b if stronger == a else a)
+        m = Match(
+            vlr_match_id=f"bm_{k}",
+            event="Seed Club League",
+            played_at=played,
+            source_url=SRC,
+            captured_at=now,
+            team_a_id=a,
+            team_b_id=b,
+            winner_team_id=winner,
+            score_a=2 if winner == a else 1,
+            score_b=2 if winner == b else 1,
+        )
+        session.add(m)
+        session.flush()
+        mm = MatchMap(match_id=m.id, map_id=map_id)
+        session.add(mm)
+        session.flush()
+        for side_team in (a, b):
+            for pid in roster[side_team]:
+                session.add(
+                    PlayerMapStat(
+                        match_map_id=mm.id,
+                        player_id=pid,
+                        team_id=side_team,
+                        rating=1.0,
+                        acs=200,
+                        kast=70,
+                        adr=140,
+                        kills=15,
+                        deaths=14,
+                        assists=5,
+                        source_url=SRC,
+                        captured_at=now,
+                    )
+                )
+    session.flush()
+    return start + timedelta(days=150)

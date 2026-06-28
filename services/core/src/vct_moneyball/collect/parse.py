@@ -42,6 +42,7 @@ class ParsedPlayerStat:
     assists: int | None
     source_url: str
     captured_at: datetime
+    team_index: int = 0  # which stats table (0 = team_a, 1 = team_b) — for side attribution
 
 
 @dataclass
@@ -236,10 +237,12 @@ def parse_match(html: str, *, source_url: str, captured_at: datetime) -> ParsedM
             continue
         map_name = map_names.get(gid) or _map_name_from_header(game) or f"game-{gid}"
         parsed_map = ParsedMap(map_name=map_name, vlr_game_id=gid)
-        for table in game.select("table.wf-table-inset.mod-overview"):
+        for table_index, table in enumerate(game.select("table.wf-table-inset.mod-overview")):
             for row in table.select("tbody tr"):
                 stat = _parse_player_row(row, source_url=source_url, captured_at=captured_at)
                 if stat is not None:
+                    # First overview table = team_a (side 0), second = team_b (side 1).
+                    stat.team_index = min(table_index, 1)
                     parsed_map.players.append(stat)
                     if stat.team_abbrev and stat.team_abbrev not in abbrevs:
                         abbrevs.append(stat.team_abbrev)
