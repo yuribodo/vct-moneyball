@@ -9,7 +9,12 @@ import pytest
 
 from vct_moneyball.collect.cache import RawHtmlCache
 from vct_moneyball.collect.client import Fetcher
-from vct_moneyball.collect.targets import parse_match_urls, parse_team_roster
+from vct_moneyball.collect.targets import (
+    parse_match_urls,
+    parse_player_matches,
+    parse_team_roster,
+    player_matches_url,
+)
 
 pytestmark = pytest.mark.unit
 
@@ -41,6 +46,37 @@ def test_parse_match_urls_dedupes_trailing_slash() -> None:
     """
     urls = parse_match_urls(html)
     assert urls == ["https://www.vlr.gg/670474/team-vitality-vs-fut-esports-masters-london"]
+
+
+PLAYER_MATCHES_HTML = """
+<html><body>
+  <a class="wf-card m-item" href="/706327/qor-vs-yft-r6">
+     <div class="m-item-date">2026/06/27 8:20 pm</div></a>
+  <a class="wf-card m-item" href="/701227/qor-vs-evictix-r5/">
+     <div class="m-item-date">2026/06/24 5:00 pm</div></a>
+  <a class="wf-card m-item" href="/100000/old-match">
+     <div class="m-item-date">2024/01/01 1:00 pm</div></a>
+  <a class="wf-card" href="/team/6985/qor">not a match</a>
+</body></html>
+"""
+
+
+def test_player_matches_url() -> None:
+    assert (
+        player_matches_url("https://www.vlr.gg/player/25745/kumi")
+        == "https://www.vlr.gg/player/matches/25745/kumi/"
+    )
+
+
+def test_parse_player_matches_reads_dates_and_dedupes() -> None:
+    refs = parse_player_matches(PLAYER_MATCHES_HTML)
+    urls = [r.match_url for r in refs]
+    assert "https://www.vlr.gg/706327/qor-vs-yft-r6" in urls
+    assert "https://www.vlr.gg/team/6985/qor" not in urls  # not a match link
+    by_url = {r.match_url: r.played_at for r in refs}
+    assert by_url["https://www.vlr.gg/706327/qor-vs-yft-r6"] == datetime(
+        2026, 6, 27, 20, 20, tzinfo=UTC
+    )
 
 
 def test_cache_roundtrip_and_latest(tmp_path: pathlib.Path) -> None:

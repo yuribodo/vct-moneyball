@@ -38,6 +38,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_collect.add_argument("--no-cache", dest="use_cache", action="store_false")
     p_collect.add_argument("--rate-limit", type=float, default=20.0, help="requests/minute")
+    p_collect.add_argument(
+        "--max-matches-per-player",
+        type=int,
+        default=30,
+        help="cap on most-recent in-window club matches collected per rostered player",
+    )
 
     # vctm build-ranking
     p_build = sub.add_parser("build-ranking", help="score, aggregate, write locked artifact")

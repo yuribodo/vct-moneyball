@@ -12,12 +12,12 @@ from __future__ import annotations
 import os
 import re
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 
 from bs4 import BeautifulSoup
 
 from vct_moneyball.collect.client import Fetcher
-from vct_moneyball.common.logging import CliError
+from vct_moneyball.common.logging import CliError, get_logger
 
 VLR_BASE = "https://www.vlr.gg"
 
@@ -125,6 +125,85 @@ def parse_match_urls(html: str, *, in_window: datetime | None = None) -> list[st
             abs_url = _normalize(href)
             if abs_url not in urls:
                 urls.append(abs_url)
+    return urls
+
+
+@dataclass(frozen=True)
+class PlayerMatchRef:
+    match_url: str
+    played_at: datetime | None
+
+
+def player_matches_url(player_url: str) -> str | None:
+    """Map a player page URL to their match-history page URL."""
+    m = re.search(r"/player/(\d+)/([a-z0-9-]+)", player_url)
+    if not m:
+        return None
+    return f"{VLR_BASE}/player/matches/{m.group(1)}/{m.group(2)}/"
+
+
+def _parse_match_date(text: str) -> datetime | None:
+    """Parse a VLR match-card date like ``2026/06/27 8:20 pm`` (treated as UTC)."""
+    m = re.search(r"\d{4}/\d{2}/\d{2}(?:\s+\d{1,2}:\d{2}\s*[ap]m)?", text, re.I)
+    if not m:
+        return None
+    raw = re.sub(r"\s+", " ", m.group(0)).strip()
+    for fmt in ("%Y/%m/%d %I:%M %p", "%Y/%m/%d"):
+        try:
+            return datetime.strptime(raw, fmt).replace(tzinfo=UTC)
+        except ValueError:
+            continue
+    return None
+
+
+def parse_player_matches(html: str) -> list[PlayerMatchRef]:
+    """Parse a player's match-history page into (match URL, played-at) refs."""
+    soup = BeautifulSoup(html, "html.parser")
+    refs: list[PlayerMatchRef] = []
+    seen: set[str] = set()
+    for card in soup.select("a.wf-card[href]"):
+        href = str(card.get("href", ""))
+        if not re.match(r"^/\d{4,8}/[a-z0-9-]", href):
+            continue
+        url = _normalize(href)
+        if url in seen:
+            continue
+        seen.add(url)
+        date_el = card.select_one(".m-item-date, [class*='date']")
+        played_at = _parse_match_date(date_el.get_text(" ", strip=True)) if date_el else None
+        refs.append(PlayerMatchRef(match_url=url, played_at=played_at))
+    return refs
+
+
+def discover_player_match_urls(
+    fetcher: Fetcher,
+    player_url: str,
+    window_start: datetime,
+    window_end: datetime,
+    *,
+    limit: int | None = None,
+) -> list[str]:
+    """Most-recent in-window match URLs for a player (first page only, R5).
+
+    Reads dates from the listing so only in-window matches are returned (no per-match
+    fetch needed here). ``limit`` caps how many of the most-recent in-window matches
+    to keep, per player.
+    """
+    matches_url = player_matches_url(player_url)
+    if matches_url is None:
+        return []
+    try:
+        page = fetcher.fetch(matches_url)
+    except CliError:
+        get_logger().warning("no match history for %s", player_url)
+        return []
+    urls: list[str] = []
+    for ref in parse_player_matches(page.html):
+        if ref.played_at is not None and not (window_start <= ref.played_at <= window_end):
+            continue
+        urls.append(ref.match_url)
+        if limit is not None and len(urls) >= limit:
+            break
     return urls
 
 

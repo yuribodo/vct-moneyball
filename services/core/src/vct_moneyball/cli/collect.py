@@ -20,6 +20,7 @@ from vct_moneyball.collect.cache import RawHtmlCache
 from vct_moneyball.collect.client import Fetcher
 from vct_moneyball.collect.parse import parse_match
 from vct_moneyball.collect.targets import (
+    discover_player_match_urls,
     discover_rosters,
     parse_match_urls,
     resolve_cohort_team_urls,
@@ -31,8 +32,8 @@ from vct_moneyball.store.repositories import Repositories
 
 ENC_TEAM_COUNT = 16
 
-# Sentinel "map" labels VLR uses for undecided maps — not real map identities.
-_NON_MAP_NAMES = {"TBD"}
+# Sentinel "map" labels VLR uses for undecided/forfeit maps — not real identities.
+_NON_MAP_NAMES = {"TBD", "N/A"}
 
 
 @dataclass
@@ -68,6 +69,44 @@ def _team_matches_url(team_url: str) -> str:
     return f"https://www.vlr.gg/team/matches/{m.group(1)}/{m.group(2)}/?group=completed"
 
 
+def _persist_match(repos, parsed, page, summary: CollectSummary, seen_maps: set[str]) -> None:
+    """Upsert one parsed match and all its per-map player stats (with provenance)."""
+    match_db_id = repos.upsert_match(
+        vlr_match_id=parsed.vlr_match_id,
+        event=parsed.event,
+        played_at=parsed.played_at or page.captured_at,
+        source_url=parsed.source_url,
+        captured_at=parsed.captured_at,
+    )
+    summary.matches += 1
+    for pmap in parsed.maps:
+        in_pool = pmap.map_name.upper() not in _NON_MAP_NAMES
+        map_db_id = repos.upsert_map(name=pmap.map_name, in_pool=in_pool)
+        seen_maps.add(pmap.map_name)
+        match_map_id = repos.upsert_match_map(match_id=match_db_id, map_id=map_db_id)
+        for stat in pmap.players:
+            pid = repos.upsert_player(
+                handle=stat.handle,
+                vlr_player_id=stat.vlr_player_id,
+                source_url=stat.source_url,
+                captured_at=stat.captured_at,
+            )
+            repos.upsert_player_map_stat(
+                match_map_id=match_map_id,
+                player_id=pid,
+                source_url=stat.source_url,
+                captured_at=stat.captured_at,
+                rating=stat.rating,
+                acs=stat.acs,
+                kast=stat.kast,
+                adr=stat.adr,
+                kills=stat.kills,
+                deaths=stat.deaths,
+                assists=stat.assists,
+            )
+            summary.stat_rows += 1
+
+
 def run_collect(args: argparse.Namespace) -> int:
     log = get_logger()
     config = DEFAULT_CONFIG
@@ -94,16 +133,21 @@ def run_collect(args: argparse.Namespace) -> int:
         if not any(m.is_active for m in r.members):
             raise CliError(f"team {r.name!r} has no active roster players")
 
+    max_per_player = getattr(args, "max_matches_per_player", None) or 30
+
     engine = make_engine()
     summary = CollectSummary()
     seen_players: set[str] = set()
     seen_matches: set[str] = set()
     seen_maps: set[str] = set()
+    player_urls: list[str] = []
 
     with session_scope(engine) as session:
         repos = Repositories(session)
+        now = datetime.now(UTC)
+
+        # 1) Persist teams + active rosters; remember each active player's page.
         for roster in rosters:
-            now = datetime.now(UTC)
             team_id = repos.upsert_team(
                 name=roster.name,
                 country=roster.country,
@@ -131,58 +175,47 @@ def run_collect(args: argparse.Namespace) -> int:
                     is_active=True,
                 )
                 seen_players.add(member.vlr_player_id or member.handle)
+                if member.player_url:
+                    player_urls.append(member.player_url)
 
-            # Discover + persist this team's in-window matches.
+        # 2) Discover in-window match URLs: national-team listings + each rostered
+        #    player's recent club history (R5 — where the predictive signal lives).
+        match_urls: list[str] = []
+
+        def _add(url: str) -> None:
+            if url not in match_urls:
+                match_urls.append(url)
+
+        for roster in rosters:
             try:
                 listing = fetcher.fetch(_team_matches_url(roster.team_url))
+                for u in parse_match_urls(listing.html):
+                    _add(u)
             except CliError as exc:
-                log.warning("match listing unavailable for %s: %s", roster.name, exc)
+                log.warning("team match listing unavailable for %s: %s", roster.name, exc)
+
+        for i, purl in enumerate(player_urls, start=1):
+            for u in discover_player_match_urls(
+                fetcher, purl, window_start, cutoff, limit=max_per_player
+            ):
+                _add(u)
+            if i % 20 == 0:
+                log.info("discovered match history for %d/%d players", i, len(player_urls))
+        log.info("fetching up to %d unique candidate matches", len(match_urls))
+
+        # 3) Fetch + parse + persist each unique in-window match once.
+        for match_url in match_urls:
+            if match_url in seen_matches:
                 continue
-            for match_url in parse_match_urls(listing.html):
-                if match_url in seen_matches:
-                    continue
-                try:
-                    page = fetcher.fetch(match_url)
-                except CliError:
-                    continue
-                parsed = parse_match(page.html, source_url=match_url, captured_at=page.captured_at)
-                if parsed.played_at and not (window_start <= parsed.played_at <= cutoff):
-                    continue
-                seen_matches.add(match_url)
-                match_db_id = repos.upsert_match(
-                    vlr_match_id=parsed.vlr_match_id,
-                    event=parsed.event,
-                    played_at=parsed.played_at or page.captured_at,
-                    source_url=parsed.source_url,
-                    captured_at=parsed.captured_at,
-                )
-                summary.matches += 1
-                for pmap in parsed.maps:
-                    in_pool = pmap.map_name.upper() not in _NON_MAP_NAMES
-                    map_db_id = repos.upsert_map(name=pmap.map_name, in_pool=in_pool)
-                    seen_maps.add(pmap.map_name)
-                    match_map_id = repos.upsert_match_map(match_id=match_db_id, map_id=map_db_id)
-                    for stat in pmap.players:
-                        pid = repos.upsert_player(
-                            handle=stat.handle,
-                            vlr_player_id=stat.vlr_player_id,
-                            source_url=stat.source_url,
-                            captured_at=stat.captured_at,
-                        )
-                        repos.upsert_player_map_stat(
-                            match_map_id=match_map_id,
-                            player_id=pid,
-                            source_url=stat.source_url,
-                            captured_at=stat.captured_at,
-                            rating=stat.rating,
-                            acs=stat.acs,
-                            kast=stat.kast,
-                            adr=stat.adr,
-                            kills=stat.kills,
-                            deaths=stat.deaths,
-                            assists=stat.assists,
-                        )
-                        summary.stat_rows += 1
+            try:
+                page = fetcher.fetch(match_url)
+            except CliError:
+                continue
+            parsed = parse_match(page.html, source_url=match_url, captured_at=page.captured_at)
+            if parsed.played_at and not (window_start <= parsed.played_at <= cutoff):
+                continue
+            seen_matches.add(match_url)
+            _persist_match(repos, parsed, page, summary, seen_maps)
 
     summary.players = len(seen_players)
     summary.maps = len(seen_maps)
