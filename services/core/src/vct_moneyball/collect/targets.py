@@ -40,8 +40,14 @@ class TeamRoster:
     members: list[RosterMember] = field(default_factory=list)
 
 
+def _normalize(url: str) -> str:
+    """Drop the query string and any trailing slash so equivalent URLs dedup."""
+    base = url.split("?")[0].split("#")[0].rstrip("/")
+    return base if base.startswith("http") else f"{VLR_BASE}{base}"
+
+
 def _abs(url: str) -> str:
-    return url if url.startswith("http") else f"{VLR_BASE}{url}"
+    return _normalize(url)
 
 
 def _team_id_from_url(url: str) -> str | None:
@@ -103,20 +109,20 @@ def parse_event_team_urls(html: str) -> list[str]:
     for link in soup.select("a[href^='/team/']"):
         href = str(link.get("href", ""))
         if re.search(r"/team/\d+/", href):
-            abs_url = _abs(href.split("?")[0])
+            abs_url = _normalize(href)
             if abs_url not in urls:
                 urls.append(abs_url)
     return urls
 
 
 def parse_match_urls(html: str, *, in_window: datetime | None = None) -> list[str]:
-    """Extract match page URLs from a VLR.gg match-list/results page."""
+    """Extract unique match page URLs from a VLR.gg match-list/results page."""
     soup = BeautifulSoup(html, "html.parser")
     urls: list[str] = []
     for link in soup.select("a[href]"):
         href = str(link.get("href", ""))
         if re.match(r"^/\d{4,8}/[a-z0-9-]+", href):
-            abs_url = _abs(href.split("?")[0])
+            abs_url = _normalize(href)
             if abs_url not in urls:
                 urls.append(abs_url)
     return urls

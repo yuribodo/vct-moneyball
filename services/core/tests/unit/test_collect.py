@@ -9,7 +9,7 @@ import pytest
 
 from vct_moneyball.collect.cache import RawHtmlCache
 from vct_moneyball.collect.client import Fetcher
-from vct_moneyball.collect.targets import parse_team_roster
+from vct_moneyball.collect.targets import parse_match_urls, parse_team_roster
 
 pytestmark = pytest.mark.unit
 
@@ -28,6 +28,19 @@ def test_parse_team_roster_real_fixture() -> None:
     active = [m for m in roster.members if m.is_active]
     assert len(active) >= 5
     assert any(not m.is_active for m in roster.members)  # baha/AtaKaptan are inactive
+
+
+def test_parse_match_urls_dedupes_trailing_slash() -> None:
+    # VLR links the same match with and without a trailing slash (and with a query);
+    # they must collapse to a single normalized URL (respectful: no duplicate fetch).
+    html = """
+    <a href="/670474/team-vitality-vs-fut-esports-masters-london">a</a>
+    <a href="/670474/team-vitality-vs-fut-esports-masters-london/">b</a>
+    <a href="/670474/team-vitality-vs-fut-esports-masters-london/?map=2">c</a>
+    <a href="/team/1184/fut-esports">not-a-match</a>
+    """
+    urls = parse_match_urls(html)
+    assert urls == ["https://www.vlr.gg/670474/team-vitality-vs-fut-esports-masters-london"]
 
 
 def test_cache_roundtrip_and_latest(tmp_path: pathlib.Path) -> None:
