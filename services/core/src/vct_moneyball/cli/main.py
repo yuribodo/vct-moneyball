@@ -125,6 +125,13 @@ def build_parser() -> argparse.ArgumentParser:
     p_er.add_argument("--out-dir", type=str, default=None)
     p_er.add_argument("--version", type=str, default=None)
 
+    # vctm serve
+    p_serve = sub.add_parser("serve", help="run the read-only prediction API")
+    _add_common(p_serve)
+    p_serve.add_argument("--host", type=str, default="127.0.0.1")
+    p_serve.add_argument("--port", type=int, default=8000)
+    p_serve.add_argument("--reload", action="store_true")
+
     # vctm evaluate
     p_eval = sub.add_parser("evaluate", help="compare a locked ranking to final standings")
     _add_common(p_eval)
@@ -188,6 +195,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             from vct_moneyball.cli.enc_ranking import run_enc_ranking
 
             return run_enc_ranking(args)
+        if args.command == "serve":
+            from vct_moneyball.cli.serve import run_serve
+
+            return run_serve(args)
         if args.command == "evaluate":
             from vct_moneyball.cli.evaluate import run_evaluate
 

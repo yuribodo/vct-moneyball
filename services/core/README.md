@@ -117,6 +117,23 @@ temporal split is verified), sparse rosters are flagged low-confidence (never gu
 `enc-predict` names the top contributing players. Reports/rankings land under
 `artifacts/models/bridge/`.
 
+## Prediction API (feature 004)
+
+A read-only HTTP service over the pipeline: serves the published ENC ranking + eval
+reports (byte-faithful from `artifacts/`) and live ENC predictions (delegating to the
+feature-003 bridge, so responses match the CLI). See `specs/004-prediction-api/`.
+
+```bash
+uv run vctm serve            # http://127.0.0.1:8000/docs (OpenAPI)
+curl -s localhost:8000/enc/ranking | jq '.teams | length'
+curl -s "localhost:8000/enc/predict?team_a=United%20States%20of%20America&team_b=Brazil&as_of=2026-11-08"
+curl -s "localhost:8000/enc/evaluation?kind=bridge" | jq '.model_metrics, .baselines'
+```
+
+Endpoints: `GET /health · /enc/ranking · /enc/predict · /enc/evaluation`. Every response
+carries provenance; failures use honest status codes (400/404/503); the service mutates
+nothing and predictions equal the CLI for the same inputs.
+
 ## Quality gates (Constitution III)
 
 ```bash

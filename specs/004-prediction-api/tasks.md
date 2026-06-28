@@ -23,9 +23,9 @@ guarantees are tested headless (FastAPI TestClient) and must fail before impleme
 
 ## Phase 1: Setup
 
-- [ ] T001 Add `httpx>=0.27` to the `api` dependency group and create the `api/` package
+- [X] T001 Add `httpx>=0.27` to the `api` dependency group and create the `api/` package
   (`src/vct_moneyball/api/__init__.py`, `api/routes/__init__.py`) in services/core/pyproject.toml
-- [ ] T002 [P] Register a `serve` subcommand (host/port/reload) in src/vct_moneyball/cli/main.py
+- [X] T002 [P] Register a `serve` subcommand (host/port/reload) in src/vct_moneyball/cli/main.py
 
 ---
 
@@ -33,12 +33,12 @@ guarantees are tested headless (FastAPI TestClient) and must fail before impleme
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T003 [P] Pydantic response schemas (Provenance, RankingResponse, PredictionResponse,
+- [X] T003 [P] Pydantic response schemas (Provenance, RankingResponse, PredictionResponse,
   EvaluationResponse, ErrorResponse) in src/vct_moneyball/api/schemas.py
-- [ ] T004 Read-only DB session + settings dependencies in src/vct_moneyball/api/deps.py
-- [ ] T005 Artifact discovery/loading (latest published ranking + eval reports, read-only) in
+- [X] T004 Read-only DB session + settings dependencies in src/vct_moneyball/api/deps.py
+- [X] T005 Artifact discovery/loading (latest published ranking + eval reports, read-only) in
   src/vct_moneyball/api/artifacts.py
-- [ ] T006 FastAPI app factory + exception handlers (map errors to 400/404/503 ErrorResponse)
+- [X] T006 FastAPI app factory + exception handlers (map errors to 400/404/503 ErrorResponse)
   in src/vct_moneyball/api/app.py (depends on T003, T004)
 
 **Checkpoint**: app boots; schemas + read sources + error model ready.
@@ -54,12 +54,12 @@ matching the committed artifact; 404 when none is published.
 
 ### Tests for User Story 1 (write first, ensure they FAIL)
 
-- [ ] T007 [P] [US1] Integration test: GET /enc/ranking returns 16 teams + provenance and 404
+- [X] T007 [P] [US1] Integration test: GET /enc/ranking returns 16 teams + provenance and 404
   when absent, via TestClient in tests/integration/test_api_ranking.py
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] GET /enc/ranking route (read latest artifact, map to RankingResponse) in
+- [X] T008 [US1] GET /enc/ranking route (read latest artifact, map to RankingResponse) in
   src/vct_moneyball/api/routes/ranking.py (depends on T005, T006)
 
 **Checkpoint**: the ENC ranking is consumable over HTTP — demoable MVP.
@@ -75,12 +75,12 @@ confidence, contributors — identical to `vctm enc-predict`; 400 on bad input.
 
 ### Tests for User Story 2 (write first, ensure they FAIL)
 
-- [ ] T009 [P] [US2] Integration test: GET /enc/predict CLI-parity + low-confidence flag +
+- [X] T009 [P] [US2] Integration test: GET /enc/predict CLI-parity + low-confidence flag +
   400 on unknown team/bad date in tests/integration/test_api_predict.py
 
 ### Implementation for User Story 2
 
-- [ ] T010 [US2] GET /enc/predict route (delegate to the feature-003 bridge) in
+- [X] T010 [US2] GET /enc/predict route (delegate to the feature-003 bridge) in
   src/vct_moneyball/api/routes/predict.py (depends on T006)
 
 **Checkpoint**: live ENC predictions over HTTP, matching the CLI.
@@ -96,12 +96,12 @@ run id + window; 404 when none.
 
 ### Tests for User Story 3 (write first, ensure they FAIL)
 
-- [ ] T011 [P] [US3] Integration test: GET /enc/evaluation returns metrics + baselines +
+- [X] T011 [P] [US3] Integration test: GET /enc/evaluation returns metrics + baselines +
   provenance, 404 when absent in tests/integration/test_api_evaluation.py
 
 ### Implementation for User Story 3
 
-- [ ] T012 [US3] GET /enc/evaluation route (read latest report) in
+- [X] T012 [US3] GET /enc/evaluation route (read latest report) in
   src/vct_moneyball/api/routes/evaluation.py (depends on T005, T006)
 
 **Checkpoint**: the honest evaluation is consumable over HTTP.
@@ -110,13 +110,13 @@ run id + window; 404 when none.
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T013 [P] GET /health (liveness + DB reachability) in src/vct_moneyball/api/routes/health.py
-- [ ] T014 [P] Read-only guarantee test (no endpoint mutates data) + error-model test (400/404/
+- [X] T013 [P] GET /health (liveness + DB reachability) in src/vct_moneyball/api/routes/health.py
+- [X] T014 [P] Read-only guarantee test (no endpoint mutates data) + error-model test (400/404/
   503 shapes) in tests/integration/test_api_contract.py
-- [ ] T015 [US1] `vctm serve` runs the app via uvicorn in src/vct_moneyball/cli/serve.py
-- [ ] T016 [P] Document the API + run flow in services/core/README.md and add a Makefile `serve`
+- [X] T015 [US1] `vctm serve` runs the app via uvicorn in src/vct_moneyball/cli/serve.py
+- [X] T016 [P] Document the API + run flow in services/core/README.md and add a Makefile `serve`
   target in Makefile
-- [ ] T017 Confirm `make lint && make fmt && make test` are green
+- [X] T017 Confirm `make lint && make fmt && make test` are green
 
 ---
 
