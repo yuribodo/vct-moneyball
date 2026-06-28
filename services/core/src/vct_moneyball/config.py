@@ -23,6 +23,14 @@ DEFAULT_METRIC_WEIGHTS: dict[str, float] = {
     "kd": 0.10,
 }
 
+# Strength-of-schedule proxy: a performance's contribution is scaled by the tier of
+# the event it came from (see ``score/events.py``). Versioned, explainable weights.
+DEFAULT_EVENT_TIER_WEIGHTS: dict[str, float] = {
+    "t1": 1.00,  # international / franchised league play
+    "t2": 0.55,  # regional development circuits
+    "t3": 0.25,  # national-team events, qualifiers, minor/local
+}
+
 
 @dataclass(frozen=True)
 class ScoringConfig:
@@ -37,6 +45,11 @@ class ScoringConfig:
 
     # Metric weights for the per-map player composite (must sum to 1.0).
     metric_weights: dict[str, float] = field(default_factory=lambda: dict(DEFAULT_METRIC_WEIGHTS))
+
+    # Event-tier weights (strength-of-schedule proxy); applied at aggregation time.
+    event_tier_weights: dict[str, float] = field(
+        default_factory=lambda: dict(DEFAULT_EVENT_TIER_WEIGHTS)
+    )
 
     # Confidence cutoffs expressed as the fraction of a team/contributor's maps that
     # are backed by sufficient history. >= high_cutoff -> high; >= medium_cutoff ->
@@ -54,6 +67,8 @@ class ScoringConfig:
             raise ValueError("min_history_maps must be >= 1")
         if self.data_window_months < 1:
             raise ValueError("data_window_months must be >= 1")
+        if not self.event_tier_weights or any(w < 0 for w in self.event_tier_weights.values()):
+            raise ValueError("event_tier_weights must be non-empty and non-negative")
 
     def canonical(self) -> dict[str, object]:
         """Stable, JSON-serializable representation used for hashing."""
@@ -61,6 +76,9 @@ class ScoringConfig:
             "data_window_months": self.data_window_months,
             "min_history_maps": self.min_history_maps,
             "metric_weights": {k: round(v, 6) for k, v in sorted(self.metric_weights.items())},
+            "event_tier_weights": {
+                k: round(v, 6) for k, v in sorted(self.event_tier_weights.items())
+            },
             "confidence_high_cutoff": self.confidence_high_cutoff,
             "confidence_medium_cutoff": self.confidence_medium_cutoff,
         }

@@ -86,6 +86,7 @@ def load_stat_rows(session: Session, window_start: datetime, window_end: datetim
             PlayerMapStat.kills,
             PlayerMapStat.deaths,
             PlayerMapStat.assists,
+            Match.event,
         )
         .join(Player, Player.id == PlayerMapStat.player_id)
         .join(MatchMap, MatchMap.id == PlayerMapStat.match_map_id)
@@ -100,7 +101,7 @@ def load_stat_rows(session: Session, window_start: datetime, window_end: datetim
     ).all()
 
     rows: list[StatRow] = []
-    for pid, handle, map_name, rating, acs, kast, adr, kills, deaths, assists in stat_rows:
+    for pid, handle, map_name, rating, acs, kast, adr, kills, deaths, assists, event in stat_rows:
         team_id, team_name, country = team_of[pid]
         rows.append(
             StatRow(
@@ -117,6 +118,7 @@ def load_stat_rows(session: Session, window_start: datetime, window_end: datetim
                 kills=kills,
                 deaths=deaths,
                 assists=assists,
+                event=event,
             )
         )
     return rows

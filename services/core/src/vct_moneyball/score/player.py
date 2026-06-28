@@ -16,6 +16,7 @@ from dataclasses import dataclass
 from statistics import median
 
 from vct_moneyball.config import DEFAULT_CONFIG, ScoringConfig
+from vct_moneyball.score.events import classify_event_tier
 
 # Metrics that feed the composite. ``kd`` is derived from kills/deaths.
 _METRICS = ("rating", "acs", "kast", "adr", "kd")
@@ -39,6 +40,7 @@ class StatRow:
     deaths: int | None = None
     assists: int | None = None
     role: str | None = None
+    event: str | None = None  # event name → tier weight (strength-of-schedule)
 
     def metric(self, name: str) -> float | None:
         if name == "kd":
@@ -96,13 +98,16 @@ def score_players(
 
     composites = _row_composites(rows, config.metric_weights)
 
-    # Group composites by (player, map).
-    grouped: dict[tuple[int | str, str], list[float]] = defaultdict(list)
+    # Group (composite, tier weight) by (player, map); each performance is weighted
+    # by the tier of its event (strength-of-schedule proxy).
+    grouped: dict[tuple[int | str, str], list[tuple[float, float]]] = defaultdict(list)
     meta: dict[tuple[int | str, str], tuple[str, int | str]] = {}
     by_map: dict[str, list[float]] = defaultdict(list)
     for row, comp in zip(rows, composites, strict=True):
         key = (row.player_id, row.map)
-        grouped[key].append(comp)
+        tier = classify_event_tier(row.event)
+        weight = config.event_tier_weights.get(tier, 0.0)
+        grouped[key].append((comp, weight))
         meta[key] = (row.player, row.team_id)
         by_map[row.map].append(comp)
 
@@ -110,12 +115,14 @@ def score_players(
     baseline_by_map = {m: median(v) for m, v in by_map.items()}
 
     scores: dict[tuple[int | str, str], PlayerMapScore] = {}
-    for key, comps in grouped.items():
+    for key, weighted in grouped.items():
         player, team_id = meta[key]
         _, map_name = key
-        maps_played = len(comps)
-        if maps_played >= config.min_history_maps:
-            value, low = sum(comps) / maps_played, False
+        maps_played = len(weighted)
+        total_weight = sum(w for _, w in weighted)
+        if maps_played >= config.min_history_maps and total_weight > 0:
+            value = sum(c * w for c, w in weighted) / total_weight
+            low = False
         else:
             value, low = baseline_by_map[map_name], True
         scores[key] = PlayerMapScore(

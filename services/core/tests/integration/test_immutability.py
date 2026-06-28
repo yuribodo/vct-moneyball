@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from datetime import UTC, datetime, timedelta
 
 import pytest
@@ -61,9 +62,15 @@ def test_supersedes_creates_new_artifact_linked_to_original(clean_db, tmp_path) 
     assert (tmp_path / "enc-2026.v2" / "ranking.json").is_file()
 
 
-def test_supersedes_unknown_version_fails(clean_db, tmp_path) -> None:
+def test_supersedes_unknown_version_records_lineage_without_db_link(clean_db, tmp_path) -> None:
+    # A superseded version may be from an earlier code version not in this DB; the build
+    # still succeeds, records the lineage string in the artifact, and leaves the FK null.
     with Session(clean_db) as s:
         seed_cohort(s)
         s.commit()
-    with pytest.raises(CliError, match="supersedes"):
-        run_build_ranking(_args("enc-2026.v2", tmp_path, supersedes="enc-2026.v9"))
+    assert run_build_ranking(_args("enc-2026.v2", tmp_path, supersedes="enc-2026.v9")) == 0
+    with Session(clean_db) as s:
+        v2 = s.execute(select(Ranking).where(Ranking.version == "enc-2026.v2")).scalar_one()
+        assert v2.supersedes_ranking_id is None
+    artifact = json.loads((tmp_path / "enc-2026.v2" / "ranking.json").read_text())
+    assert artifact["supersedes"] == "enc-2026.v9"

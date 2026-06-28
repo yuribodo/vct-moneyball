@@ -88,7 +88,14 @@ def run_build_ranking(args: argparse.Namespace) -> int:
                 select(Ranking.id).where(Ranking.version == args.supersedes)
             ).scalar_one_or_none()
             if supersedes_id is None:
-                raise CliError(f"--supersedes {args.supersedes!r} not found")
+                # A superseded ranking may be from an earlier code version (reproducible
+                # from git) and not materialized in this DB. Record the lineage string in
+                # the artifact regardless; only the DB FK link is skipped.
+                log.warning(
+                    "superseded version %r not in this DB; recording lineage in the "
+                    "artifact without a DB link",
+                    args.supersedes,
+                )
 
         map_pool = load_map_pool(session)
         if not map_pool:
