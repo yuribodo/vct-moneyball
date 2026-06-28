@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vct-moneyball/contracts/eval-report.schema.json",
+  "title": "Winrate Evaluation Report",
+  "description": "Baseline-relative evaluation of the winrate model on a held-out future block.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "created_at",
+    "cutoff",
+    "data_window",
+    "feature_fingerprint",
+    "learner",
+    "n_train",
+    "n_eval",
+    "model",
+    "baselines"
+  ],
+  "properties": {
+    "run_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "cutoff": { "type": "string", "format": "date-time" },
+    "data_window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "type": "string", "format": "date-time" },
+        "end": { "type": "string", "format": "date-time" }
+      }
+    },
+    "feature_fingerprint": { "type": "string", "minLength": 8 },
+    "learner": { "type": "string", "enum": ["logreg", "gbt"] },
+    "n_train": { "type": "integer", "minimum": 0 },
+    "n_eval": { "type": "integer", "minimum": 0 },
+    "underpowered": { "type": "boolean", "default": false },
+    "leakage_verified": { "const": true },
+    "model": { "$ref": "#/$defs/metrics" },
+    "baselines": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "metrics"],
+        "properties": {
+          "label": { "type": "string" },
+          "metrics": { "$ref": "#/$defs/metrics" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["log_loss", "accuracy", "brier"],
+      "properties": {
+        "log_loss": { "type": "number", "minimum": 0 },
+        "accuracy": { "type": "number", "minimum": 0, "maximum": 1 },
+        "brier": { "type": "number", "minimum": 0, "maximum": 1 },
+        "calibration_error": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}
