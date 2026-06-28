@@ -8,7 +8,9 @@ call is injectable (``fetch_fn``) to keep tests fully offline and deterministic.
 
 from __future__ import annotations
 
+import os
 import time
+import urllib.request
 from collections.abc import Callable
 from datetime import UTC, datetime
 
@@ -16,6 +18,22 @@ from vct_moneyball.collect.cache import CachedPage, RawHtmlCache
 from vct_moneyball.common.logging import CliError, get_logger
 
 FetchFn = Callable[[str], str]
+
+_USER_AGENT = "Mozilla/5.0 (vct-moneyball research)"
+
+
+def _http_fetch(url: str) -> str:
+    """Fetch a page with a plain HTTP GET (VLR.gg is server-rendered — no JS needed)."""
+    req = urllib.request.Request(url, headers={"User-Agent": _USER_AGENT})
+    with urllib.request.urlopen(req, timeout=30) as resp:  # noqa: S310 - fixed https host
+        return resp.read().decode("utf-8", "replace")
+
+
+def _default_fetch_fn() -> FetchFn:
+    """Pick the fetch backend: ``VCTM_FETCH=http`` for headless HTTP, else Playwright."""
+    if os.environ.get("VCTM_FETCH", "").lower() == "http":
+        return _http_fetch
+    return _playwright_fetch
 
 
 def _playwright_fetch(url: str) -> str:
@@ -48,7 +66,7 @@ class Fetcher:
         self.cache = cache
         self.use_cache = use_cache
         self.min_interval = 60.0 / rate_limit_per_min if rate_limit_per_min > 0 else 0.0
-        self._fetch_fn = fetch_fn or _playwright_fetch
+        self._fetch_fn = fetch_fn or _default_fetch_fn()
         self._clock = clock or (lambda: datetime.now(UTC))
         self._last_request: float | None = None
         self._log = get_logger()

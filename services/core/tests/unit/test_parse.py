@@ -61,3 +61,45 @@ def test_parse_is_deterministic(html: str) -> None:
     a = parse_match(html, source_url=SOURCE_URL, captured_at=CAPTURED_AT)
     b = parse_match(html, source_url=SOURCE_URL, captured_at=CAPTURED_AT)
     assert a == b
+
+
+def test_played_at_is_timezone_aware(html: str) -> None:
+    # VLR's data-utc-ts has no offset; the parser must return tz-aware UTC so it
+    # compares cleanly against the (aware) data window.
+    match = parse_match(html, source_url=SOURCE_URL, captured_at=CAPTURED_AT)
+    assert match.played_at is not None
+    assert match.played_at.tzinfo is not None
+
+
+# A minimal Bo1 page: VLR omits the map-switcher nav, so the map name must come
+# from the game header's ``.map`` div (the bug the real ENC collect surfaced).
+BO1_HTML = """
+<html><body>
+  <div class="match-header-event"><div style="font-weight: 700">Some Event</div></div>
+  <span data-utc-ts="2026-06-20 10:00:00"></span>
+  <div class="vm-stats-game" data-game-id="235217">
+    <div class="vm-stats-game-header"><div class="map"><span>Lotus -</span></div></div>
+    <table class="wf-table-inset mod-overview"><tbody>
+      <tr>
+        <td class="mod-player"><a href="/player/100/foo"><div class="text-of">foo</div>
+          <div class="ge-text-light">ABC</div></a></td>
+        <td class="mod-agents"></td>
+        <td class="mod-stat"><span class="mod-both">1.10</span></td>
+        <td class="mod-stat"><span class="mod-both">200</span></td>
+        <td class="mod-stat"><span class="mod-both">15</span></td>
+        <td class="mod-stat"><span class="mod-both">12</span></td>
+        <td class="mod-stat"><span class="mod-both">4</span></td>
+        <td class="mod-stat"><span class="mod-both">+3</span></td>
+        <td class="mod-stat"><span class="mod-both">72%</span></td>
+        <td class="mod-stat"><span class="mod-both">140</span></td>
+      </tr>
+    </tbody></table>
+  </div>
+</body></html>
+"""
+
+
+def test_bo1_map_name_from_header() -> None:
+    match = parse_match(BO1_HTML, source_url="https://www.vlr.gg/235217/x", captured_at=CAPTURED_AT)
+    assert [m.map_name for m in match.maps] == ["Lotus"]  # not "game-235217"
+    assert match.maps[0].players[0].handle == "foo"

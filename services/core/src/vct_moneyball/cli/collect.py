@@ -31,6 +31,9 @@ from vct_moneyball.store.repositories import Repositories
 
 ENC_TEAM_COUNT = 16
 
+# Sentinel "map" labels VLR uses for undecided maps — not real map identities.
+_NON_MAP_NAMES = {"TBD"}
+
 
 @dataclass
 class CollectSummary:
@@ -155,7 +158,8 @@ def run_collect(args: argparse.Namespace) -> int:
                 )
                 summary.matches += 1
                 for pmap in parsed.maps:
-                    map_db_id = repos.upsert_map(name=pmap.map_name)
+                    in_pool = pmap.map_name.upper() not in _NON_MAP_NAMES
+                    map_db_id = repos.upsert_map(name=pmap.map_name, in_pool=in_pool)
                     seen_maps.add(pmap.map_name)
                     match_map_id = repos.upsert_match_map(match_id=match_db_id, map_id=map_db_id)
                     for stat in pmap.players:

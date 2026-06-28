@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 
 from bs4 import BeautifulSoup, Tag
 
@@ -100,6 +100,16 @@ def _map_names(soup: BeautifulSoup) -> dict[str, str]:
     return names
 
 
+def _map_name_from_header(game: Tag) -> str | None:
+    """Read a map name from a game's own header — used for Bo1s with no map nav."""
+    map_el = game.select_one(".vm-stats-game-header .map")
+    if map_el is None:
+        return None
+    # Header text looks like "Lotus -"; take the first alphabetic run.
+    m = re.search(r"[A-Za-z]+", map_el.get_text(" ", strip=True))
+    return m.group(0) if m else None
+
+
 def _parse_player_row(
     row: Tag, *, source_url: str, captured_at: datetime
 ) -> ParsedPlayerStat | None:
@@ -154,7 +164,9 @@ def parse_match(html: str, *, source_url: str, captured_at: datetime) -> ParsedM
     if ts_el is not None:
         raw = str(ts_el.get("data-utc-ts", "")).strip()
         try:
-            played_at = datetime.fromisoformat(raw)
+            parsed_ts = datetime.fromisoformat(raw)
+            # VLR's data-utc-ts is UTC but carries no offset; make it tz-aware.
+            played_at = parsed_ts if parsed_ts.tzinfo else parsed_ts.replace(tzinfo=UTC)
         except ValueError:
             played_at = None
 
@@ -166,7 +178,8 @@ def parse_match(html: str, *, source_url: str, captured_at: datetime) -> ParsedM
         gid = game.get("data-game-id")
         if not isinstance(gid, str) or gid == "all":
             continue
-        parsed_map = ParsedMap(map_name=map_names.get(gid, f"game-{gid}"), vlr_game_id=gid)
+        map_name = map_names.get(gid) or _map_name_from_header(game) or f"game-{gid}"
+        parsed_map = ParsedMap(map_name=map_name, vlr_game_id=gid)
         for table in game.select("table.wf-table-inset.mod-overview"):
             for row in table.select("tbody tr"):
                 stat = _parse_player_row(row, source_url=source_url, captured_at=captured_at)
