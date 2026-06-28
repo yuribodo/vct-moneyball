@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# uv
+# (uv.lock is committed; nothing to ignore)
+
+# Env / secrets
+.env
+.env.local
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# ML / experiments
+mlruns/
+mlartifacts/
+*.ckpt
+*.pt
+
+# Data (versioned via DVC later, not git)
+/data/
+*.csv.dvc.tmp
+
+# Node / Next.js (Phase 3)
+node_modules/
+.next/
+out/
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
