@@ -39,95 +39,101 @@ export default function PredictPage() {
     }
   }
 
+  const bLeads = result ? result.p_b > result.p_a : false;
+
   return (
     <>
-      <h1>Predict a matchup</h1>
-      <p className="lede">
-        Pick two ENC teams and a date. The win probability comes from each roster&apos;s club
-        form, using only data from before that date.
-      </p>
+      <div className="section-head">
+        <div>
+          <p className="kicker">Head&#8209;to&#8209;Head</p>
+          <h1 className="headline">Run the tape.</h1>
+        </div>
+        <p className="standfirst">
+          Two nations, one date. The forecast reads only what was known before that day —
+          each roster’s club form, nothing from the future.
+        </p>
+      </div>
 
-      <form className="matchup" onSubmit={onSubmit}>
-        <div>
-          <label htmlFor="a">Team A</label>
-          <select id="a" value={teamA} onChange={(e) => setTeamA(e.target.value)}>
-            {teams.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
+      <form onSubmit={onSubmit}>
+        <div className="field" style={{ maxWidth: 220, marginTop: 24 }}>
+          <label htmlFor="asof">Forecast as of</label>
+          <input
+            id="asof"
+            type="date"
+            value={asOf}
+            onChange={(e) => setAsOf(e.target.value)}
+          />
         </div>
-        <div>
-          <label htmlFor="b">Team B</label>
-          <select id="b" value={teamB} onChange={(e) => setTeamB(e.target.value)}>
-            {teams.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
+        <div className="matchup-form">
+          <div className="field">
+            <label htmlFor="a">Home</label>
+            <select id="a" value={teamA} onChange={(e) => setTeamA(e.target.value)}>
+              {teams.map((t) => (
+                <option key={t}>{t}</option>
+              ))}
+            </select>
+          </div>
+          <span className="vs">vs</span>
+          <div className="field">
+            <label htmlFor="b">Away</label>
+            <select id="b" value={teamB} onChange={(e) => setTeamB(e.target.value)}>
+              {teams.map((t) => (
+                <option key={t}>{t}</option>
+              ))}
+            </select>
+          </div>
+          <button
+            className="cast"
+            type="submit"
+            disabled={loading || !teamA || !teamB || teamA === teamB}
+          >
+            {loading ? "Calling…" : "Call it"}
+          </button>
         </div>
-        <button type="submit" disabled={loading || !teamA || !teamB || teamA === teamB}>
-          {loading ? "…" : "Predict"}
-        </button>
       </form>
 
       {error ? (
-        <div className="state">
-          <strong>Could not predict</strong>
-          <div style={{ marginTop: 6 }}>{error}</div>
+        <div className="empty" style={{ marginTop: 8 }}>
+          <p className="kicker">No call</p>
+          <h2 style={{ fontSize: "var(--step-1)" }}>{error}</h2>
         </div>
       ) : null}
 
       {result ? (
-        <>
-          <div className="matchup-result">
-            <TeamCard
-              name={result.team_a}
-              prob={result.p_a}
-              contributors={result.contributors_a}
-              win={result.winner === result.team_a}
-            />
-            <TeamCard
-              name={result.team_b}
-              prob={result.p_b}
-              contributors={result.contributors_b}
-              win={result.winner === result.team_b}
-            />
+        <section className="verdict-split">
+          <div className="split-names">
+            <span className="a">{result.team_a}</span>
+            <span className="b">{result.team_b}</span>
           </div>
-          {result.low_confidence ? (
-            <div className="note">
-              Low confidence — at least one roster has sparse club history, so this is a soft
-              read, not a strong call.
+          <div className={`split-bar${bLeads ? " b-leads" : ""}`}>
+            <div className="a" style={{ flexBasis: `${result.p_a * 100}%` }}>
+              {(result.p_a * 100).toFixed(0)}%
             </div>
+            <div className="b" style={{ flexBasis: `${result.p_b * 100}%` }}>
+              {(result.p_b * 100).toFixed(0)}%
+            </div>
+          </div>
+          <div className="rosters">
+            <div className="a">
+              <strong>Carrying {result.team_a}</strong>
+              {result.contributors_a.join(" · ") || "—"}
+            </div>
+            <div className="b">
+              <strong>Carrying {result.team_b}</strong>
+              {result.contributors_b.join(" · ") || "—"}
+            </div>
+          </div>
+          <p className="called">
+            The call: <b>{result.winner}</b>.
+          </p>
+          {result.low_confidence ? (
+            <p className="footnote">
+              Soft read — at least one roster has thin club history, so don’t bet the house.
+            </p>
           ) : null}
           <ProvenanceLine p={result.provenance} />
-        </>
+        </section>
       ) : null}
     </>
-  );
-}
-
-function TeamCard({
-  name,
-  prob,
-  contributors,
-  win,
-}: {
-  name: string;
-  prob: number;
-  contributors: string[];
-  win: boolean;
-}) {
-  return (
-    <div className={`team-card${win ? " win" : ""}`}>
-      <div className="team-name">{name}</div>
-      <div className="prob">{(prob * 100).toFixed(1)}%</div>
-      <div className="bar">
-        <span style={{ width: `${prob * 100}%` }} />
-      </div>
-      <div className="contribs">Top: {contributors.join(", ") || "—"}</div>
-    </div>
   );
 }

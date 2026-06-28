@@ -1,6 +1,5 @@
-import { Badge } from "@/components/Badge";
 import { ProvenanceLine } from "@/components/Provenance";
-import { Unavailable } from "@/components/States";
+import { Empty } from "@/components/States";
 import { api, ApiError } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
@@ -13,51 +12,65 @@ export default async function Home() {
     const err = e as ApiError;
     return (
       <>
-        <h1>ENC 2026 Power Ranking</h1>
-        <Unavailable
-          title={err.status === 404 ? "No ranking published yet" : "Ranking unavailable"}
-          detail={
-            err.status === 404
-              ? "Publish one with `vctm enc-ranking`, then reload."
-              : err.message
-          }
-        />
+        <Head />
+        {err.status === 404 ? (
+          <Empty kicker="No edition yet" title="The ranking hasn’t gone to press.">
+            Publish one with <code>vctm enc-ranking</code>, then reload.
+          </Empty>
+        ) : (
+          <Empty kicker="Off the wire" title="The ledger is unavailable.">
+            {err.message}
+          </Empty>
+        )}
       </>
     );
   }
 
+  const scores = ranking.teams.map((t) => t.score);
+  const lo = Math.min(...scores);
+  const hi = Math.max(...scores);
+  const width = (s: number) => 0.16 + 0.84 * ((s - lo) / (hi - lo || 1));
+
   return (
     <>
-      <h1>ENC 2026 Power Ranking</h1>
-      <p className="lede">
-        The 16 national teams ranked by roster-derived strength — each player&apos;s recent
-        club form, aggregated. Locked and dated before kickoff.
-      </p>
-      <div className="panel">
-        <table>
-          <thead>
-            <tr>
-              <th className="pos">#</th>
-              <th>Team</th>
-              <th className="num">Strength</th>
-              <th>Confidence</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ranking.teams.map((t) => (
-              <tr key={t.position} className={`rank-${t.position}`}>
-                <td className="pos">{t.position}</td>
-                <td>{t.team}</td>
-                <td className="num">{Math.round(t.score)}</td>
-                <td>
-                  <Badge confidence={t.confidence} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Head />
+      <ol className="ledger">
+        {ranking.teams.map((t, i) => (
+          <li
+            key={t.position}
+            className={`entry${t.position === 1 ? " lead" : ""}`}
+            style={{ animationDelay: `${0.05 + i * 0.035}s` }}
+          >
+            <span className="rank">{t.position}</span>
+            <div className="team-block">
+              <div className="team">{t.team}</div>
+              <div className="meter">
+                <span style={{ "--w": width(t.score) } as React.CSSProperties} />
+              </div>
+            </div>
+            <div className="figure">
+              <span className="score">{Math.round(t.score)}</span>
+              <span className={`conf ${t.confidence}`}>{t.confidence}</span>
+            </div>
+          </li>
+        ))}
+      </ol>
       <ProvenanceLine p={ranking.provenance} />
     </>
+  );
+}
+
+function Head() {
+  return (
+    <div className="section-head">
+      <div>
+        <p className="kicker">Power Ranking · ENC 2026</p>
+        <h1 className="headline">The sixteen, in order.</h1>
+      </div>
+      <p className="standfirst">
+        Strength is each squad’s roster rated by its players’ recent club form — opponent-
+        adjusted, leakage-free. The bar is the spread; the number is the rating.
+      </p>
+    </div>
   );
 }
