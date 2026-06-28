@@ -42,6 +42,9 @@ def _ensure_test_database():
     # own engine via make_engine()) stay isolated from real data too.
     os.environ["DATABASE_URL"] = url.render_as_string(hide_password=False)
     eng = make_engine()
+    # Disposable test DB: rebuild the schema each session so it always matches the models
+    # (create_all alone won't add columns to a pre-existing table).
+    Base.metadata.drop_all(eng)
     Base.metadata.create_all(eng)
     return eng
 

@@ -61,6 +61,58 @@ class Repositories:
         )
         return self.s.execute(stmt).scalar_one()
 
+    def upsert_team_by_vlr(
+        self,
+        *,
+        name: str,
+        vlr_team_id: str,
+        source_url: str,
+        captured_at: datetime,
+        country: str | None = None,
+    ) -> int:
+        """Upsert a team keyed on its VLR id (used for opponents/clubs in match headers).
+
+        Preserves ``country``/``is_enc_2026`` on conflict (only refreshes name/provenance),
+        so backfilling opponents never clobbers an ENC team's identity.
+        """
+        stmt = (
+            insert(Team)
+            .values(
+                name=name,
+                country=country,
+                vlr_team_id=vlr_team_id,
+                is_enc_2026=False,
+                source_url=source_url,
+                captured_at=captured_at,
+            )
+            .on_conflict_do_update(
+                constraint="uq_team_vlr_id",
+                set_={"name": name, "source_url": source_url, "captured_at": captured_at},
+            )
+            .returning(Team.id)
+        )
+        return self.s.execute(stmt).scalar_one()
+
+    def set_match_outcome(
+        self,
+        *,
+        match_id: int,
+        team_a_id: int | None,
+        team_b_id: int | None,
+        winner_team_id: int | None,
+        score_a: int | None,
+        score_b: int | None,
+    ) -> None:
+        """Record the parsed match identity + result on an existing match row."""
+        match = self.s.get(Match, match_id)
+        if match is None:  # pragma: no cover - guarded by caller
+            return
+        match.team_a_id = team_a_id
+        match.team_b_id = team_b_id
+        match.winner_team_id = winner_team_id
+        match.score_a = score_a
+        match.score_b = score_b
+
     def upsert_player(
         self,
         *,

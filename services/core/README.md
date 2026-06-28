@@ -77,6 +77,28 @@ uv run vctm evaluate --version enc-2026.v1 --standings final.json --baseline vlr
 Writes `outcome_comparison` rows (Spearman ρ, Kendall τ, top-4 hit rate); the ranking is
 read-only.
 
+## Winrate predictor (feature 002)
+
+A match-outcome model learned from the collected history; predicts calibrated win
+probabilities, evaluated only on held-out **future** matches vs. an explicit baseline,
+with runs tracked in MLflow (`mlruns/`, git-ignored). See
+`specs/002-winrate-predictor/`.
+
+```bash
+uv run alembic upgrade head            # adds match outcome columns
+uv run vctm backfill-results           # offline: derive winners from cached HTML
+uv run vctm eval-winrate --cutoff 2026-04-01 \
+  --baseline winrate-elo --baseline coin     # train<cutoff, eval>=cutoff, vs baselines
+uv run vctm train-winrate --cutoff 2026-11-08 # train + log an MLflow run
+uv run vctm predict-match --team-a "United States of America" --team-b "Brazil" \
+  --as-of 2026-11-08                          # calibrated win probabilities
+```
+
+Reports land in `artifacts/models/winrate/<run>/` (JSON validated against
+`contracts/eval-report.schema.json` + Markdown). Features are **leakage-free** (each
+match's signals use only data dated before it; the temporal split is verified) and a
+model that does not beat its baseline is reported as such.
+
 ## Quality gates (Constitution III)
 
 ```bash

@@ -63,6 +63,16 @@ def test_parse_is_deterministic(html: str) -> None:
     assert a == b
 
 
+def test_parses_match_result(html: str) -> None:
+    # T006 — header gives both teams, the series score, and the winner.
+    match = parse_match(html, source_url=SOURCE_URL, captured_at=CAPTURED_AT)
+    assert match.team_a is not None and match.team_b is not None
+    assert match.team_a.vlr_team_id == "6985"  # QoR
+    assert match.team_b.vlr_team_id == "22589"  # YFT
+    assert (match.score_a, match.score_b) == (1, 2)
+    assert match.winner_vlr_team_id == "22589"  # YFT won 2:1
+
+
 def test_played_at_is_timezone_aware(html: str) -> None:
     # VLR's data-utc-ts has no offset; the parser must return tz-aware UTC so it
     # compares cleanly against the (aware) data window.

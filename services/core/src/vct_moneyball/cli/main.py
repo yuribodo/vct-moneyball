@@ -55,6 +55,40 @@ def build_parser() -> argparse.ArgumentParser:
     p_build.add_argument("--supersedes", type=str, default=None)
     p_build.add_argument("--use-cache", dest="use_cache", action="store_true", default=True)
 
+    # vctm backfill-results
+    p_backfill = sub.add_parser(
+        "backfill-results", help="populate match outcomes from cached HTML (offline)"
+    )
+    _add_common(p_backfill)
+    p_backfill.add_argument("--use-cache", dest="use_cache", action="store_true", default=True)
+
+    # vctm train-winrate
+    p_train = sub.add_parser("train-winrate", help="train + calibrate the winrate model")
+    _add_common(p_train)
+    p_train.add_argument("--cutoff", type=str, default=None, help="train strictly before (ISO)")
+    p_train.add_argument("--lookback-months", type=int, default=12)
+    p_train.add_argument("--learner", choices=["logreg", "gbt"], default="logreg")
+    p_train.add_argument("--experiment", type=str, default="winrate")
+
+    # vctm eval-winrate
+    p_evalw = sub.add_parser("eval-winrate", help="evaluate on a held-out future block vs baseline")
+    _add_common(p_evalw)
+    p_evalw.add_argument("--cutoff", required=True, type=str, help="train before / eval on-after")
+    p_evalw.add_argument("--lookback-months", type=int, default=12)
+    p_evalw.add_argument("--learner", choices=["logreg", "gbt"], default="logreg")
+    p_evalw.add_argument("--baseline", action="append", default=None, help="repeatable")
+    p_evalw.add_argument("--experiment", type=str, default="winrate")
+    p_evalw.add_argument("--out-dir", type=str, default=None)
+
+    # vctm predict-match
+    p_pred = sub.add_parser("predict-match", help="predict a single matchup")
+    _add_common(p_pred)
+    p_pred.add_argument("--team-a", required=True, type=str)
+    p_pred.add_argument("--team-b", required=True, type=str)
+    p_pred.add_argument("--as-of", type=str, default=None, help="ISO date (default now)")
+    p_pred.add_argument("--lookback-months", type=int, default=12)
+    p_pred.add_argument("--run", type=str, default=None, help="MLflow run id (default latest)")
+
     # vctm evaluate
     p_eval = sub.add_parser("evaluate", help="compare a locked ranking to final standings")
     _add_common(p_eval)
@@ -86,6 +120,22 @@ def main(argv: Sequence[str] | None = None) -> int:
             from vct_moneyball.cli.build_ranking import run_build_ranking
 
             return run_build_ranking(args)
+        if args.command == "backfill-results":
+            from vct_moneyball.cli.backfill_results import run_backfill_results
+
+            return run_backfill_results(args)
+        if args.command == "train-winrate":
+            from vct_moneyball.cli.train_winrate import run_train_winrate
+
+            return run_train_winrate(args)
+        if args.command == "eval-winrate":
+            from vct_moneyball.cli.eval_winrate import run_eval_winrate
+
+            return run_eval_winrate(args)
+        if args.command == "predict-match":
+            from vct_moneyball.cli.predict_match import run_predict_match
+
+            return run_predict_match(args)
         if args.command == "evaluate":
             from vct_moneyball.cli.evaluate import run_evaluate
 
