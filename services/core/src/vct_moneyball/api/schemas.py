@@ -41,8 +41,53 @@ class PredictionResponse(BaseModel):
     p_b: float
     winner: str
     low_confidence: bool
+    elo_a: float
+    elo_b: float
     contributors_a: list[str]
     contributors_b: list[str]
+    provenance: Provenance
+
+
+class TeamContributor(BaseModel):
+    player: str
+    player_score: float
+    maps_played: int
+    confidence: str
+    low_history_baseline: bool
+
+
+class TeamMapScore(BaseModel):
+    map: str
+    map_score: float
+    confidence: str
+
+
+class TeamDetailResponse(BaseModel):
+    team: str
+    country: str | None = None
+    position: int
+    team_score: float
+    roster_elo: float | None = None
+    confidence: str
+    contributors: list[TeamContributor]
+    map_breakdown: list[TeamMapScore]
+    provenance: Provenance
+
+
+class MatrixTeam(BaseModel):
+    team: str
+    position: int  # seed (roster ranking position)
+    elo: float
+    confidence: str
+    contributors: list[str]
+    country: str | None = None
+
+
+class MatrixResponse(BaseModel):
+    as_of: str
+    aggregation: str
+    teams: list[MatrixTeam]  # index order == matrix order, seeded by position
+    p: list[list[float]]  # p[i][j] = P(teams[i] beats teams[j]); diagonal 0.5
     provenance: Provenance
 
 

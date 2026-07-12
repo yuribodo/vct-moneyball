@@ -45,6 +45,7 @@ def test_predict_matches_cli(clean_db, capsys) -> None:
     assert api["p_a"] == cli["p_a"] and api["winner"] == cli["winner"]  # parity
     assert abs(api["p_a"] + api["p_b"] - 1.0) < 1e-9
     assert api["low_confidence"] is False
+    assert isinstance(api["elo_a"], float) and isinstance(api["elo_b"], float)  # surfaced for UI
     assert api["provenance"]["source"] == "model_run"
 
 
