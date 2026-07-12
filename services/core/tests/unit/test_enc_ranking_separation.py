@@ -17,18 +17,18 @@ pytestmark = pytest.mark.unit
 
 def test_margin_uses_smaller_of_the_two_neighbor_gaps() -> None:
     elos = [1600.0, 1550.0, 1500.0]
-    assert _elo_margin_to_next(elos, 1) == 50.0  # equidistant either way here
+    assert _elo_margin_to_next(elos, 1) == pytest.approx(50.0)  # equidistant either way here
 
 
 def test_margin_picks_the_closer_neighbor() -> None:
     elos = [1600.0, 1590.0, 1500.0]
-    assert _elo_margin_to_next(elos, 1) == 10.0  # 10 up, 90 down -> min is 10
+    assert _elo_margin_to_next(elos, 1) == pytest.approx(10.0)  # 10 up, 90 down -> min is 10
 
 
 def test_edge_positions_have_only_one_neighbor() -> None:
     elos = [1600.0, 1550.0, 1500.0]
-    assert _elo_margin_to_next(elos, 0) == 50.0
-    assert _elo_margin_to_next(elos, 2) == 50.0
+    assert _elo_margin_to_next(elos, 0) == pytest.approx(50.0)
+    assert _elo_margin_to_next(elos, 2) == pytest.approx(50.0)
 
 
 def test_single_team_has_no_margin() -> None:

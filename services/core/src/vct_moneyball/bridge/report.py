@@ -41,9 +41,7 @@ def build_report(
     cutoff: datetime,
     data_window: tuple[datetime, datetime],
     feature_fingerprint: str,
-    aggregation: str,
-    learner: str,
-    calibration_method: str,
+    training_config: dict[str, str],
     n_train: int,
     n_eval: int,
     attribution_coverage: float,
@@ -51,15 +49,17 @@ def build_report(
     model: Metrics,
     baselines: list[tuple[str, Metrics]],
 ) -> dict[str, Any]:
+    """``training_config`` carries ``aggregation``, ``learner``, ``calibration_method``
+    (grouped to keep the parameter count reasonable — see python:S107)."""
     return {
         "run_id": run_id,
         "created_at": created_at.isoformat(),
         "cutoff": cutoff.isoformat(),
         "data_window": {"start": data_window[0].isoformat(), "end": data_window[1].isoformat()},
         "feature_fingerprint": feature_fingerprint,
-        "aggregation": aggregation,
-        "learner": learner,
-        "calibration_method": calibration_method,
+        "aggregation": training_config["aggregation"],
+        "learner": training_config["learner"],
+        "calibration_method": training_config["calibration_method"],
         "n_train": n_train,
         "n_eval": n_eval,
         "attribution_coverage": round(attribution_coverage, 4),

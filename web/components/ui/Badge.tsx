@@ -1,4 +1,4 @@
-import { confColor, confLevel, separationWords, type Conf, type Separation } from "@/lib/format";
+import { confColor, confLevel, separationWords, type Conf } from "@/lib/format";
 
 // Confidence as a 3-bar signal (like reception strength) + label — reads
 // instantly as "how sure are we", no generic pill-with-dot badge.
@@ -40,7 +40,9 @@ export function ConfidenceSignal({
 // How close a team's rank is to its neighbor's — orthogonal to ConfidenceSignal
 // (that's data volume; this is rank precision). Silent for "clear" since that's the
 // unremarkable default — only flags the cases worth a second look.
-export function SeparationTag({ separation }: { separation?: Separation | null }) {
+export function SeparationTag({
+  separation,
+}: Readonly<{ separation?: string | null }>) {
   if (!separation || separation === "clear") return null;
   const color = separation === "razor-thin" ? "var(--color-red)" : "var(--color-conf-medium)";
   return (
