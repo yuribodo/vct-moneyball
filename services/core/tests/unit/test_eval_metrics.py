@@ -49,7 +49,7 @@ def test_calibration_error_skips_empty_bins() -> None:
 
 
 def test_calibration_error_empty_input_is_zero() -> None:
-    assert calibration_error([], []) == 0.0
+    assert calibration_error([], []) == pytest.approx(0.0)
 
 
 def test_baseline_elo_uses_feature_diff() -> None:

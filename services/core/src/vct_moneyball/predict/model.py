@@ -51,8 +51,10 @@ def _base_estimator(learner: str):
     if learner == "gbt":
         from sklearn.ensemble import GradientBoostingClassifier
 
-        return GradientBoostingClassifier(random_state=0)
-    return make_pipeline(StandardScaler(), LogisticRegression(C=1.0, max_iter=1000))
+        return GradientBoostingClassifier(learning_rate=0.1, random_state=0)
+    return make_pipeline(
+        StandardScaler(), LogisticRegression(C=1.0, max_iter=1000), memory=None
+    )
 
 
 def _build_estimator(learner: str, method: str):

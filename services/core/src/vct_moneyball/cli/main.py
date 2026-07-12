@@ -14,6 +14,8 @@ from collections.abc import Sequence
 
 from vct_moneyball.common.logging import CliError, get_logger, set_verbose
 
+_CALIBRATION_HELP = "calibration method; auto picks by internal validation (default)"
+
 
 def _add_common(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--json", action="store_true", help="emit machine-readable JSON on stdout")
@@ -75,7 +77,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--calibration",
         choices=["auto", "sigmoid", "isotonic"],
         default="auto",
-        help="calibration method; auto picks by internal validation (default)",
+        help=_CALIBRATION_HELP,
     )
     p_train.add_argument("--experiment", type=str, default="winrate")
 
@@ -89,7 +91,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--calibration",
         choices=["auto", "sigmoid", "isotonic"],
         default="auto",
-        help="calibration method; auto picks by internal validation (default)",
+        help=_CALIBRATION_HELP,
     )
     p_evalw.add_argument("--baseline", action="append", default=None, help="repeatable")
     p_evalw.add_argument("--experiment", type=str, default="winrate")
@@ -124,7 +126,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--calibration",
         choices=["auto", "sigmoid", "isotonic"],
         default="auto",
-        help="calibration method; auto picks by internal validation (default)",
+        help=_CALIBRATION_HELP,
     )
     p_eb.add_argument("--baseline", action="append", default=None, help="repeatable")
     p_eb.add_argument("--experiment", type=str, default="bridge")
