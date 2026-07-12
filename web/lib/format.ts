@@ -40,6 +40,17 @@ export const confWords = (c: Conf): string =>
       ? "A decent but not deep sample."
       : "Thin club history — read with caution.";
 
+export type Separation = "clear" | "contested" | "razor-thin" | string;
+
+/** Plain-language gloss for how close a team's Elo sits to its nearest rank neighbor.
+ * Independent of confidence — a data-rich team can still be in a statistical dead heat. */
+export const separationWords = (s: Separation): string =>
+  s === "razor-thin"
+    ? "Within a coin-flip of its neighbor — don't read too much into the exact rank."
+    : s === "contested"
+      ? "Close to its neighbor — the rank could shuffle with fresh data."
+      : "Clear gap to its neighbor.";
+
 /** URL-safe team slug used in /team/[name] links. */
 export const teamSlug = (name: string) => encodeURIComponent(name);
 export const teamFromSlug = (slug: string) => decodeURIComponent(slug);

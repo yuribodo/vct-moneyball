@@ -23,6 +23,8 @@ class RankingTeam(BaseModel):
     team: str
     score: float
     confidence: str
+    elo_margin_to_next: float | None = None
+    separation: str | None = None
 
 
 class RankingResponse(BaseModel):

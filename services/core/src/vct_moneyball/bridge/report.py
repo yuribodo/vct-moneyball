@@ -42,6 +42,7 @@ def build_report(
     data_window: tuple[datetime, datetime],
     feature_fingerprint: str,
     aggregation: str,
+    learner: str,
     calibration_method: str,
     n_train: int,
     n_eval: int,
@@ -57,6 +58,7 @@ def build_report(
         "data_window": {"start": data_window[0].isoformat(), "end": data_window[1].isoformat()},
         "feature_fingerprint": feature_fingerprint,
         "aggregation": aggregation,
+        "learner": learner,
         "calibration_method": calibration_method,
         "n_train": n_train,
         "n_eval": n_eval,
@@ -80,8 +82,8 @@ def render_markdown(report: dict[str, Any]) -> str:
     lines = [
         "# Roster-Strength Bridge Evaluation",
         "",
-        f"- Run: `{report['run_id']}`  ·  aggregation: `{report['aggregation']}`  ·  "
-        f"calibration: `{report['calibration_method']}`",
+        f"- Run: `{report['run_id']}`  ·  learner: `{report['learner']}`  ·  "
+        f"aggregation: `{report['aggregation']}`  ·  calibration: `{report['calibration_method']}`",
         f"- Cutoff: `{report['cutoff']}`  ·  Train/Eval: {report['n_train']}/{report['n_eval']}"
         + ("  ⚠️ underpowered" if report.get("underpowered") else ""),
         f"- Attribution coverage: {report['attribution_coverage']:.1%}  ·  leakage verified: "

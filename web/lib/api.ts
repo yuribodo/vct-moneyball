@@ -12,7 +12,14 @@ export type Provenance = {
   feature_fingerprint?: string | null;
 };
 
-export type RankingTeam = { position: number; team: string; score: number; confidence: string };
+export type RankingTeam = {
+  position: number;
+  team: string;
+  score: number;
+  confidence: string;
+  elo_margin_to_next?: number | null;
+  separation?: string | null;
+};
 export type Ranking = {
   version: string;
   as_of?: string | null;

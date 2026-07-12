@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useReveal } from "@/components/motion/useReveal";
 import { ScoreMeter } from "@/components/charts/ScoreMeter";
-import { ConfidenceSignal } from "@/components/ui/Badge";
+import { ConfidenceSignal, SeparationTag } from "@/components/ui/Badge";
 import { Flag } from "@/components/ui/Flag";
 import type { RankingTeam } from "@/lib/api";
 import { elo, teamSlug } from "@/lib/format";
@@ -82,8 +82,9 @@ export function RankingList({
                 </span>
               </div>
 
-              <div className="hidden justify-self-end sm:block">
+              <div className="hidden flex-col items-end gap-1 justify-self-end sm:flex">
                 <ConfidenceSignal confidence={t.confidence} />
+                <SeparationTag separation={t.separation} />
               </div>
             </div>
           </Link>

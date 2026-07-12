@@ -20,6 +20,8 @@ def ranking(source: str = "roster", version: str | None = None) -> RankingRespon
             team=t["team"],
             score=float(t.get("roster_elo", t.get("team_score", 0.0))),
             confidence=t["confidence"],
+            elo_margin_to_next=t.get("elo_margin_to_next"),
+            separation=t.get("separation"),
         )
         for t in data["teams"]
     ]
