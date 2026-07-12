@@ -16,6 +16,7 @@ from sqlalchemy import select
 
 from vct_moneyball.bridge.model import team_views_as_of
 from vct_moneyball.bridge.player_rating import PlayerRatingConfig
+from vct_moneyball.common.artifact_pointers import write_pointer
 from vct_moneyball.common.logging import CliError, get_logger
 from vct_moneyball.store.db import make_engine, session_scope
 from vct_moneyball.store.models import Team
@@ -98,6 +99,9 @@ def run_enc_ranking(args: argparse.Namespace) -> int:
         for t in artifact["teams"]
     ]
     (target / "enc-ranking.md").write_text("\n".join(md) + "\n")
+
+    if getattr(args, "publish", False):
+        write_pointer(out_dir / "LATEST", version)
 
     if args.json:
         print(json.dumps({"artifact_dir": str(target), "version": version}))

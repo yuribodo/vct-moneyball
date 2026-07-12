@@ -16,13 +16,14 @@ from vct_moneyball.common.logging import CliError
 pytestmark = pytest.mark.integration
 
 
-def _args(out_dir, version="enc-2026.bridge.v1") -> argparse.Namespace:
+def _args(out_dir, version="enc-2026.bridge.v1", publish=False) -> argparse.Namespace:
     return argparse.Namespace(
         as_of=datetime(2026, 11, 8).isoformat(),
         lookback_months=12,
         aggregation="mean",
         out_dir=str(out_dir),
         version=version,
+        publish=publish,
         json=True,
         verbose=False,
     )
@@ -41,3 +42,14 @@ def test_ranks_16_teams_and_is_immutable(clean_db, tmp_path) -> None:
     # Immutable: refuse to overwrite.
     with pytest.raises(CliError, match="overwrite"):
         run_enc_ranking(_args(tmp_path))
+
+
+def test_publish_moves_the_latest_pointer(clean_db, tmp_path) -> None:
+    with Session(clean_db) as s:
+        seed_attributed_matches(s, n_teams=16, enc_teams=16, n_matches=200)
+        s.commit()
+    assert run_enc_ranking(_args(tmp_path, version="enc-2026.bridge.v1", publish=True)) == 0
+    assert (tmp_path / "LATEST").read_text().strip() == "enc-2026.bridge.v1"
+
+    assert run_enc_ranking(_args(tmp_path, version="enc-2026.bridge.v2", publish=True)) == 0
+    assert (tmp_path / "LATEST").read_text().strip() == "enc-2026.bridge.v2"

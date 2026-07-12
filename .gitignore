@@ -30,6 +30,11 @@ mlartifacts/
 /data/
 *.csv.dvc.tmp
 
+# Disposable MLflow-run-id eval report dirs (32-char hex). These are throwaway by
+# default; publishing one is a deliberate act: `git add -f <dir>` + point LATEST/
+# LATEST_EVAL at it in the same commit (see common/artifact_pointers.py).
+artifacts/models/*/????????????????????????????????/
+
 # Node / Next.js (Phase 3)
 node_modules/
 .next/

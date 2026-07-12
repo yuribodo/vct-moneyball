@@ -17,6 +17,7 @@ from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import select
 
+from vct_moneyball.common.artifact_pointers import write_pointer
 from vct_moneyball.common.logging import CliError, get_logger
 from vct_moneyball.config import DEFAULT_CONFIG
 from vct_moneyball.rank.aggregate import aggregate_ranking
@@ -126,6 +127,8 @@ def run_build_ranking(args: argparse.Namespace) -> int:
 
         # Write the artifact directory (refuses to overwrite — immutable).
         written = write_artifact(artifact, out_dir, slug=args.version)
+        if getattr(args, "publish", False):
+            write_pointer(out_dir / "LATEST", written.name)
 
         # Persist append-only ranking* rows.
         team_id_by_name = {
