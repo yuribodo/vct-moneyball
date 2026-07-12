@@ -53,7 +53,7 @@ def test_matrix_is_16x16_with_valid_probs(clean_db, tmp_path, monkeypatch) -> No
     p = body["p"]
     assert len(p) == 16 and all(len(row) == 16 for row in p)
     for i in range(16):
-        assert p[i][i] == 0.5
+        assert p[i][i] == pytest.approx(0.5)
         for j in range(16):
             assert 0.0 <= p[i][j] <= 1.0
     assert body["provenance"]["source"] == "model_run"

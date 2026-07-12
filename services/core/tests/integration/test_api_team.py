@@ -74,9 +74,9 @@ def test_team_merges_power_and_roster(tmp_path, monkeypatch) -> None:
     assert body["team"] == "China"
     assert body["country"] == "China"
     assert body["position"] == 2  # roster position wins
-    assert body["roster_elo"] == 1563.7
+    assert body["roster_elo"] == pytest.approx(1563.7)
     assert body["confidence"] == "high"  # roster confidence wins
-    assert body["team_score"] == 0.39  # from power artifact
+    assert body["team_score"] == pytest.approx(0.39)  # from power artifact
     assert len(body["contributors"]) == 1
     assert body["contributors"][0]["player"] == "CHICHOO"
     assert len(body["map_breakdown"]) == 1
