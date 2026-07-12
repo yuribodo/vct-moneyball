@@ -62,7 +62,12 @@ def run_eval_bridge(args: argparse.Namespace) -> int:
     examples = build_bridge_examples(matches, cfg=cfg, aggregation=aggregation)
     dataset = temporal_split(examples, cutoff)
     baselines = tuple(args.baseline) if args.baseline else DEFAULT_BRIDGE_BASELINES
-    model = train(dataset.train, learner="logreg")
+    calibration = getattr(args, "calibration", "auto")
+    model = train(
+        dataset.train,
+        learner="logreg",
+        calibration_method=None if calibration == "auto" else calibration,
+    )
 
     y_eval = [e.label for e in dataset.eval]
     model_metrics = compute_metrics(y_eval, model.predict_block(dataset.eval))
@@ -75,6 +80,7 @@ def run_eval_bridge(args: argparse.Namespace) -> int:
     out_dir = pathlib.Path(args.out_dir) if getattr(args, "out_dir", None) else _default_out_dir()
     params = {
         "aggregation": aggregation,
+        "calibration_method": model.calibration_method,
         "cutoff": args.cutoff,
         "lookback_months": args.lookback_months,
         "feature_fingerprint": fp,
@@ -95,6 +101,7 @@ def run_eval_bridge(args: argparse.Namespace) -> int:
             data_window=data_window,
             feature_fingerprint=fp,
             aggregation=aggregation,
+            calibration_method=model.calibration_method,
             n_train=len(dataset.train),
             n_eval=len(dataset.eval),
             attribution_coverage=coverage,
@@ -116,10 +123,16 @@ def run_eval_bridge(args: argparse.Namespace) -> int:
         log.info(
             "wrote bridge eval report to %s (attribution coverage %.1f%%)", written, coverage * 100
         )
-        print(f"{'predictor':<14} {'log-loss':>9} {'acc':>7} {'brier':>7}")
+        print(f"{'predictor':<14} {'log-loss':>9} {'acc':>7} {'brier':>7} {'calib':>7}")
         mm = model_metrics
-        print(f"{'bridge':<14} {mm.log_loss:>9.4f} {mm.accuracy:>7.4f} {mm.brier:>7.4f}")
+        print(
+            f"{'bridge':<14} {mm.log_loss:>9.4f} {mm.accuracy:>7.4f} {mm.brier:>7.4f} "
+            f"{mm.calibration_error:>7.4f}"
+        )
         for label, m in baseline_metrics:
-            print(f"{label:<14} {m.log_loss:>9.4f} {m.accuracy:>7.4f} {m.brier:>7.4f}")
+            print(
+                f"{label:<14} {m.log_loss:>9.4f} {m.accuracy:>7.4f} {m.brier:>7.4f} "
+                f"{m.calibration_error:>7.4f}"
+            )
         print(f"\nbridge {'BEATS' if beats else 'does NOT beat'} best baseline ({best[0]}).")
     return 0

@@ -36,11 +36,17 @@ def run_train_winrate(args: argparse.Namespace) -> int:
     if not matches:
         raise CliError("no labeled training matches; run `vctm backfill-results` first")
     examples = build_examples(matches, cfg)
-    model = train(examples, learner=args.learner)
+    calibration = getattr(args, "calibration", "auto")
+    model = train(
+        examples,
+        learner=args.learner,
+        calibration_method=None if calibration == "auto" else calibration,
+    )
 
     fp = tracking.fingerprint({**cfg.as_dict(), "learner": args.learner})
     params = {
         "learner": args.learner,
+        "calibration_method": model.calibration_method,
         "cutoff": cutoff.isoformat(),
         "lookback_months": cfg.lookback_months,
         "feature_fingerprint": fp,

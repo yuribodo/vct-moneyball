@@ -71,6 +71,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_train.add_argument("--cutoff", type=str, default=None, help="train strictly before (ISO)")
     p_train.add_argument("--lookback-months", type=int, default=12)
     p_train.add_argument("--learner", choices=["logreg", "gbt"], default="logreg")
+    p_train.add_argument(
+        "--calibration",
+        choices=["auto", "sigmoid", "isotonic"],
+        default="auto",
+        help="calibration method; auto picks by internal validation (default)",
+    )
     p_train.add_argument("--experiment", type=str, default="winrate")
 
     # vctm eval-winrate
@@ -79,6 +85,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_evalw.add_argument("--cutoff", required=True, type=str, help="train before / eval on-after")
     p_evalw.add_argument("--lookback-months", type=int, default=12)
     p_evalw.add_argument("--learner", choices=["logreg", "gbt"], default="logreg")
+    p_evalw.add_argument(
+        "--calibration",
+        choices=["auto", "sigmoid", "isotonic"],
+        default="auto",
+        help="calibration method; auto picks by internal validation (default)",
+    )
     p_evalw.add_argument("--baseline", action="append", default=None, help="repeatable")
     p_evalw.add_argument("--experiment", type=str, default="winrate")
     p_evalw.add_argument("--out-dir", type=str, default=None)
@@ -108,6 +120,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_eb.add_argument("--cutoff", required=True, type=str)
     p_eb.add_argument("--lookback-months", type=int, default=12)
     p_eb.add_argument("--aggregation", choices=["mean", "topk"], default="mean")
+    p_eb.add_argument(
+        "--calibration",
+        choices=["auto", "sigmoid", "isotonic"],
+        default="auto",
+        help="calibration method; auto picks by internal validation (default)",
+    )
     p_eb.add_argument("--baseline", action="append", default=None, help="repeatable")
     p_eb.add_argument("--experiment", type=str, default="bridge")
     p_eb.add_argument("--out-dir", type=str, default=None)

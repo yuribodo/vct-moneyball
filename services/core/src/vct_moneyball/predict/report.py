@@ -42,6 +42,7 @@ def build_report(
     data_window: tuple[datetime, datetime],
     feature_fingerprint: str,
     learner: str,
+    calibration_method: str,
     n_train: int,
     n_eval: int,
     underpowered: bool,
@@ -55,6 +56,7 @@ def build_report(
         "data_window": {"start": data_window[0].isoformat(), "end": data_window[1].isoformat()},
         "feature_fingerprint": feature_fingerprint,
         "learner": learner,
+        "calibration_method": calibration_method,
         "n_train": n_train,
         "n_eval": n_eval,
         "underpowered": underpowered,
@@ -75,7 +77,8 @@ def render_markdown(report: dict[str, Any]) -> str:
     lines = [
         "# Winrate Model Evaluation",
         "",
-        f"- Run: `{report['run_id']}`  ·  Learner: `{report['learner']}`",
+        f"- Run: `{report['run_id']}`  ·  Learner: `{report['learner']}`  ·  "
+        f"Calibration: `{report['calibration_method']}`",
         f"- Cutoff: `{report['cutoff']}`  ·  Train/Eval: {report['n_train']}/{report['n_eval']}"
         + ("  ⚠️ underpowered" if report.get("underpowered") else ""),
         f"- Data window: `{report['data_window']['start']}` → `{report['data_window']['end']}`",

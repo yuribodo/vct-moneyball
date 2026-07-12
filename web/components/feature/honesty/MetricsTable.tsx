@@ -23,6 +23,7 @@ export function MetricsTable({ evaluation }: { evaluation: Evaluation }) {
           <th className="label py-2.5 px-3 text-right text-ink-3">Log-loss</th>
           <th className="label py-2.5 px-3 text-right text-ink-3">Accuracy</th>
           <th className="label py-2.5 px-3 text-right text-ink-3">Brier</th>
+          <th className="label py-2.5 px-3 text-right text-ink-3">Calib. err</th>
         </tr>
       </thead>
       <tbody>
@@ -34,6 +35,9 @@ export function MetricsTable({ evaluation }: { evaluation: Evaluation }) {
             <td className="py-3 px-3 text-right tnum text-ink">{r.m.log_loss.toFixed(4)}</td>
             <td className="py-3 px-3 text-right tnum text-ink">{(r.m.accuracy * 100).toFixed(1)}%</td>
             <td className="py-3 px-3 text-right tnum text-ink">{r.m.brier.toFixed(4)}</td>
+            <td className="py-3 px-3 text-right tnum text-ink">
+              {r.m.calibration_error != null ? r.m.calibration_error.toFixed(4) : "—"}
+            </td>
           </tr>
         ))}
       </tbody>
