@@ -38,6 +38,7 @@ def _write_eval(tmp_path):
             }
         )
     )
+    (d.parent / "LATEST_EVAL").write_text("run123\n")
 
 
 def test_evaluation_404_when_absent(tmp_path, monkeypatch) -> None:

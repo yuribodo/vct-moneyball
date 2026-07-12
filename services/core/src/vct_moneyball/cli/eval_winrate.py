@@ -12,6 +12,7 @@ import json
 import pathlib
 from datetime import UTC, datetime, timedelta
 
+from vct_moneyball.common.artifact_pointers import write_pointer
 from vct_moneyball.common.logging import CliError, get_logger
 from vct_moneyball.predict import tracking
 from vct_moneyball.predict.baselines import DEFAULT_BASELINES, baseline_probs
@@ -95,6 +96,8 @@ def run_eval_winrate(args: argparse.Namespace) -> int:
         validate_report(report)
         written = write_report(report, out_dir)
         tracking.log_artifact(written / "report.json")
+        if getattr(args, "publish", False):
+            write_pointer(out_dir / "LATEST", written.name)
 
     best = min(baseline_metrics, key=lambda lm: lm[1].log_loss)
     beats = model_metrics.log_loss < best[1].log_loss

@@ -43,6 +43,7 @@ def _write_artifacts(tmp_path) -> None:
             }
         )
     )
+    (power.parent / "LATEST").write_text("enc-2026.v2\n")
     roster = tmp_path / "artifacts" / "models" / "bridge" / "enc-2026.bridge.v1"
     roster.mkdir(parents=True)
     (roster / "enc-ranking.json").write_text(
@@ -55,6 +56,7 @@ def _write_artifacts(tmp_path) -> None:
             }
         )
     )
+    (roster.parent / "LATEST").write_text("enc-2026.bridge.v1\n")
 
 
 def test_team_404_when_absent(tmp_path, monkeypatch) -> None:

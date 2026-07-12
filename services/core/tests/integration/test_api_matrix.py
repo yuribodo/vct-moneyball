@@ -35,6 +35,7 @@ def _write_roster(tmp_path) -> None:
             }
         )
     )
+    (d.parent / "LATEST").write_text("enc-2026.bridge.v1\n")
 
 
 def test_matrix_is_16x16_with_valid_probs(clean_db, tmp_path, monkeypatch) -> None:

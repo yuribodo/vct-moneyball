@@ -1,7 +1,10 @@
 """Locate + load the latest published artifacts (read-only).
 
 Reads the committed ranking and evaluation artifacts byte-faithfully; the API never
-recomputes or mutates them (Constitution II). Missing artifacts raise a 404.
+recomputes or mutates them (Constitution II). "Latest" is resolved via a committed
+``LATEST``/``LATEST_EVAL`` pointer file (see ``common.artifact_pointers``), never by
+filesystem mtime — mtime is non-deterministic across a fresh checkout and can point at
+an artifact that was never committed. Missing artifacts raise a 404.
 """
 
 from __future__ import annotations
@@ -11,6 +14,8 @@ import pathlib
 from typing import Any
 
 from fastapi import HTTPException
+
+from vct_moneyball.common.artifact_pointers import read_pointer
 
 
 def repo_root() -> pathlib.Path:
@@ -24,18 +29,31 @@ def _artifacts() -> pathlib.Path:
     return repo_root() / "artifacts"
 
 
-def _latest_dir(parent: pathlib.Path, version: str | None) -> pathlib.Path:
+def _resolve_by_pointer(
+    parent: pathlib.Path, pointer_name: str, required_file: str, label: str
+) -> pathlib.Path:
     if not parent.is_dir():
-        raise HTTPException(status_code=404, detail="no published artifact")
+        raise HTTPException(status_code=404, detail=f"no published {label}")
+    target_name = read_pointer(parent / pointer_name)
+    if target_name is None:
+        raise HTTPException(status_code=404, detail=f"no published {label} (no LATEST pointer)")
+    target = parent / target_name
+    if not (target / required_file).is_file():
+        raise HTTPException(
+            status_code=404, detail=f"pointer names unpublished {label} artifact {target_name!r}"
+        )
+    return target
+
+
+def _latest_dir(parent: pathlib.Path, version: str | None) -> pathlib.Path:
     if version is not None:
+        if not parent.is_dir():
+            raise HTTPException(status_code=404, detail="no published artifact")
         target = parent / version
         if not target.is_dir():
             raise HTTPException(status_code=404, detail=f"unknown version {version!r}")
         return target
-    dirs = [d for d in parent.iterdir() if d.is_dir()]
-    if not dirs:
-        raise HTTPException(status_code=404, detail="no published artifact")
-    return max(dirs, key=lambda d: d.stat().st_mtime)
+    return _resolve_by_pointer(parent, "LATEST", "ranking.json", "power ranking")
 
 
 def _load(path: pathlib.Path) -> dict[str, Any]:
@@ -53,38 +71,24 @@ def load_ranking(*, source: str = "roster", version: str | None = None) -> dict[
         parent = _artifacts() / "rankings" / "enc-2026"
         return _load(_latest_dir(parent, version) / "ranking.json")
     parent = _artifacts() / "models" / "bridge"
-    # roster ranking dirs hold enc-ranking.json (eval dirs hold report.json — skip those)
-    candidates = (
-        [d for d in parent.iterdir() if d.is_dir() and (d / "enc-ranking.json").is_file()]
-        if parent.is_dir()
-        else []
-    )
     if version is not None:
         target = parent / version
         if not (target / "enc-ranking.json").is_file():
             raise HTTPException(status_code=404, detail=f"unknown version {version!r}")
         return _load(target / "enc-ranking.json")
-    if not candidates:
-        raise HTTPException(status_code=404, detail="no published roster ranking")
-    latest = max(candidates, key=lambda d: d.stat().st_mtime)
-    return _load(latest / "enc-ranking.json")
+    target = _resolve_by_pointer(parent, "LATEST", "enc-ranking.json", "roster ranking")
+    return _load(target / "enc-ranking.json")
 
 
 def load_evaluation(*, kind: str = "bridge", run: str | None = None) -> dict[str, Any]:
     """Load the latest published evaluation report (bridge or winrate)."""
     sub = "bridge" if kind == "bridge" else "winrate"
     parent = _artifacts() / "models" / sub
-    candidates = (
-        [d for d in parent.iterdir() if d.is_dir() and (d / "report.json").is_file()]
-        if parent.is_dir()
-        else []
-    )
     if run is not None:
         target = parent / run
         if not (target / "report.json").is_file():
             raise HTTPException(status_code=404, detail=f"unknown run {run!r}")
         return _load(target / "report.json")
-    if not candidates:
-        raise HTTPException(status_code=404, detail=f"no published {sub} evaluation")
-    latest = max(candidates, key=lambda d: d.stat().st_mtime)
-    return _load(latest / "report.json")
+    pointer_name = "LATEST_EVAL" if sub == "bridge" else "LATEST"
+    target = _resolve_by_pointer(parent, pointer_name, "report.json", f"{sub} evaluation")
+    return _load(target / "report.json")

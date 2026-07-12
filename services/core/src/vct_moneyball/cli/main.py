@@ -54,6 +54,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_build.add_argument("--out-dir", type=str, default=None)
     p_build.add_argument("--supersedes", type=str, default=None)
     p_build.add_argument("--use-cache", dest="use_cache", action="store_true", default=True)
+    p_build.add_argument(
+        "--publish", action="store_true", help="point LATEST at this artifact after writing it"
+    )
 
     # vctm backfill-results
     p_backfill = sub.add_parser(
@@ -79,6 +82,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_evalw.add_argument("--baseline", action="append", default=None, help="repeatable")
     p_evalw.add_argument("--experiment", type=str, default="winrate")
     p_evalw.add_argument("--out-dir", type=str, default=None)
+    p_evalw.add_argument(
+        "--publish", action="store_true", help="point LATEST at this report after writing it"
+    )
 
     # vctm predict-match
     p_pred = sub.add_parser("predict-match", help="predict a single matchup")
@@ -105,6 +111,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_eb.add_argument("--baseline", action="append", default=None, help="repeatable")
     p_eb.add_argument("--experiment", type=str, default="bridge")
     p_eb.add_argument("--out-dir", type=str, default=None)
+    p_eb.add_argument(
+        "--publish", action="store_true", help="point LATEST_EVAL at this report after writing it"
+    )
 
     # vctm enc-predict
     p_ep = sub.add_parser("enc-predict", help="predict an ENC matchup from roster strength")
@@ -124,6 +133,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_er.add_argument("--aggregation", choices=["mean", "topk"], default="mean")
     p_er.add_argument("--out-dir", type=str, default=None)
     p_er.add_argument("--version", type=str, default=None)
+    p_er.add_argument(
+        "--publish", action="store_true", help="point LATEST at this ranking after writing it"
+    )
 
     # vctm serve
     p_serve = sub.add_parser("serve", help="run the read-only prediction API")

@@ -19,6 +19,7 @@ from vct_moneyball.bridge.baselines import DEFAULT_BRIDGE_BASELINES, baseline_pr
 from vct_moneyball.bridge.features import build_bridge_examples
 from vct_moneyball.bridge.player_rating import PlayerRatingConfig, load_player_matches
 from vct_moneyball.bridge.report import build_report, validate_report, write_report
+from vct_moneyball.common.artifact_pointers import write_pointer
 from vct_moneyball.common.logging import CliError, get_logger
 from vct_moneyball.predict import tracking
 from vct_moneyball.predict.dataset import temporal_split
@@ -104,6 +105,8 @@ def run_eval_bridge(args: argparse.Namespace) -> int:
         validate_report(report)
         written = write_report(report, out_dir)
         tracking.log_artifact(written / "report.json")
+        if getattr(args, "publish", False):
+            write_pointer(out_dir / "LATEST_EVAL", written.name)
 
     best = min(baseline_metrics, key=lambda lm: lm[1].log_loss)
     beats = model_metrics.log_loss < best[1].log_loss

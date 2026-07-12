@@ -33,6 +33,7 @@ def _write_ranking(tmp_path):
             }
         )
     )
+    (d.parent / "LATEST").write_text("enc-2026.bridge.v1\n")
 
 
 def test_ranking_404_when_absent(tmp_path, monkeypatch) -> None:
