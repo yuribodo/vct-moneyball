@@ -52,7 +52,12 @@ def run_eval_winrate(args: argparse.Namespace) -> int:
     dataset = temporal_split(examples, cutoff)
 
     baselines = tuple(args.baseline) if args.baseline else DEFAULT_BASELINES
-    model = train(dataset.train, learner=args.learner)
+    calibration = getattr(args, "calibration", "auto")
+    model = train(
+        dataset.train,
+        learner=args.learner,
+        calibration_method=None if calibration == "auto" else calibration,
+    )
 
     y_eval = [e.label for e in dataset.eval]
     model_metrics = compute_metrics(y_eval, model.predict_block(dataset.eval))
@@ -63,6 +68,7 @@ def run_eval_winrate(args: argparse.Namespace) -> int:
     fp = tracking.fingerprint({**cfg.as_dict(), "learner": args.learner})
     params = {
         "learner": args.learner,
+        "calibration_method": model.calibration_method,
         "cutoff": args.cutoff,
         "lookback_months": cfg.lookback_months,
         "feature_fingerprint": fp,
@@ -87,6 +93,7 @@ def run_eval_winrate(args: argparse.Namespace) -> int:
             data_window=data_window,
             feature_fingerprint=fp,
             learner=args.learner,
+            calibration_method=model.calibration_method,
             n_train=len(dataset.train),
             n_eval=len(dataset.eval),
             underpowered=dataset.underpowered,

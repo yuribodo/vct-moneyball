@@ -32,6 +32,7 @@
     },
     "feature_fingerprint": { "type": "string", "minLength": 8 },
     "learner": { "type": "string", "enum": ["logreg", "gbt"] },
+    "calibration_method": { "type": "string", "enum": ["sigmoid", "isotonic"] },
     "n_train": { "type": "integer", "minimum": 0 },
     "n_eval": { "type": "integer", "minimum": 0 },
     "underpowered": { "type": "boolean", "default": false },

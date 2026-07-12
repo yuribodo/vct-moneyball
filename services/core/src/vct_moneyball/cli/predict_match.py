@@ -53,7 +53,12 @@ def _load_model(run: str | None) -> WinrateModel:
     estimator = mlflow.sklearn.load_model(f"runs:/{run_id}/model")
     from vct_moneyball.predict.features import FEATURE_NAMES
 
-    return WinrateModel(estimator=estimator, feature_names=FEATURE_NAMES, learner="loaded")
+    return WinrateModel(
+        estimator=estimator,
+        feature_names=FEATURE_NAMES,
+        learner="loaded",
+        calibration_method="loaded",
+    )
 
 
 def run_predict_match(args: argparse.Namespace) -> int:

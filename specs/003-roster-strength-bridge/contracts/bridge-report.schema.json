@@ -32,6 +32,7 @@
     },
     "feature_fingerprint": { "type": "string", "minLength": 8 },
     "aggregation": { "type": "string", "enum": ["mean", "topk"] },
+    "calibration_method": { "type": "string", "enum": ["sigmoid", "isotonic"] },
     "n_train": { "type": "integer", "minimum": 0 },
     "n_eval": { "type": "integer", "minimum": 0 },
     "attribution_coverage": { "type": "number", "minimum": 0, "maximum": 1 },

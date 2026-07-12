@@ -42,6 +42,7 @@ def build_report(
     data_window: tuple[datetime, datetime],
     feature_fingerprint: str,
     aggregation: str,
+    calibration_method: str,
     n_train: int,
     n_eval: int,
     attribution_coverage: float,
@@ -56,6 +57,7 @@ def build_report(
         "data_window": {"start": data_window[0].isoformat(), "end": data_window[1].isoformat()},
         "feature_fingerprint": feature_fingerprint,
         "aggregation": aggregation,
+        "calibration_method": calibration_method,
         "n_train": n_train,
         "n_eval": n_eval,
         "attribution_coverage": round(attribution_coverage, 4),
@@ -78,20 +80,23 @@ def render_markdown(report: dict[str, Any]) -> str:
     lines = [
         "# Roster-Strength Bridge Evaluation",
         "",
-        f"- Run: `{report['run_id']}`  ·  aggregation: `{report['aggregation']}`",
+        f"- Run: `{report['run_id']}`  ·  aggregation: `{report['aggregation']}`  ·  "
+        f"calibration: `{report['calibration_method']}`",
         f"- Cutoff: `{report['cutoff']}`  ·  Train/Eval: {report['n_train']}/{report['n_eval']}"
         + ("  ⚠️ underpowered" if report.get("underpowered") else ""),
         f"- Attribution coverage: {report['attribution_coverage']:.1%}  ·  leakage verified: "
         f"{report['leakage_verified']}",
         "",
-        "| Predictor | log-loss | accuracy | Brier |",
-        "|-----------|---------:|---------:|------:|",
-        f"| **bridge** | {m['log_loss']:.4f} | {m['accuracy']:.4f} | {m['brier']:.4f} |",
+        "| Predictor | log-loss | accuracy | Brier | calib. err |",
+        "|-----------|---------:|---------:|------:|-----------:|",
+        f"| **bridge** | {m['log_loss']:.4f} | {m['accuracy']:.4f} | {m['brier']:.4f} | "
+        f"{m['calibration_error']:.4f} |",
     ]
     for b in report["baselines"]:
         bm = b["metrics"]
         lines.append(
-            f"| {b['label']} | {bm['log_loss']:.4f} | {bm['accuracy']:.4f} | {bm['brier']:.4f} |"
+            f"| {b['label']} | {bm['log_loss']:.4f} | {bm['accuracy']:.4f} | {bm['brier']:.4f} | "
+            f"{bm['calibration_error']:.4f} |"
         )
     best = min(report["baselines"], key=lambda b: b["metrics"]["log_loss"])
     verdict = "beats" if m["log_loss"] < best["metrics"]["log_loss"] else "does NOT beat"
