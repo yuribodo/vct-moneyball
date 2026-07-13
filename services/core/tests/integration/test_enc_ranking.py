@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 from sqlalchemy.orm import Session
@@ -43,6 +43,12 @@ def test_ranks_16_teams_and_is_immutable(clean_db, tmp_path) -> None:
     # neighbor to compare against, everyone else has two candidate gaps.
     assert all("separation" in t and "elo_margin_to_next" in t for t in artifact["teams"])
     assert all(t["separation"] in ("clear", "contested", "razor-thin") for t in artifact["teams"])
+    # Provenance parity with the eval-report convention: data_window derived from
+    # as_of/lookback_months (12 months here).
+    as_of = datetime.fromisoformat(artifact["as_of"])
+    expected_start = as_of - timedelta(days=30 * 12)
+    assert datetime.fromisoformat(artifact["data_window"]["start"]) == expected_start
+    assert datetime.fromisoformat(artifact["data_window"]["end"]) == as_of
     # Immutable: refuse to overwrite.
     with pytest.raises(CliError, match="overwrite"):
         run_enc_ranking(_args(tmp_path))

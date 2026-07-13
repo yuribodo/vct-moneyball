@@ -53,7 +53,9 @@ Roster-derived ordering of the 16 ENC teams.
   (points the `LATEST` pointer at this version once written).
 - **Preconditions**: 16 ENC teams each with an active roster; sides backfilled.
 - **Postconditions**: writes a dated, immutable `enc-ranking.json` (+ `.md`) citing its run;
-  inserts no rows that modify feature-001/002 artifacts.
+  inserts no rows that modify feature-001/002 artifacts. The artifact records
+  `data_window` (`[as_of - lookback_months, as_of]`), matching the eval-report
+  convention, so a re-published ranking's inputs are as auditable as an eval run's.
 - **Exit/validation**: non-zero if ≠16 ENC teams resolve or the output already exists.
 - **Output**: the 16-team ordered table with strength + confidence + `separation` (text or
   `--json`). Confidence measures per-player data sufficiency; each team additionally carries
