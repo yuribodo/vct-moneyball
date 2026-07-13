@@ -39,6 +39,10 @@ def test_ranks_16_teams_and_is_immutable(clean_db, tmp_path) -> None:
     assert len(artifact["teams"]) == 16
     assert [t["position"] for t in artifact["teams"]] == list(range(1, 17))
     assert all("confidence" in t for t in artifact["teams"])
+    # Separation: every team carries it; edge teams (rank 1 and 16) have exactly one
+    # neighbor to compare against, everyone else has two candidate gaps.
+    assert all("separation" in t and "elo_margin_to_next" in t for t in artifact["teams"])
+    assert all(t["separation"] in ("clear", "contested", "razor-thin") for t in artifact["teams"])
     # Immutable: refuse to overwrite.
     with pytest.raises(CliError, match="overwrite"):
         run_enc_ranking(_args(tmp_path))

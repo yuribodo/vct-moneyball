@@ -122,6 +122,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_eb.add_argument("--cutoff", required=True, type=str)
     p_eb.add_argument("--lookback-months", type=int, default=12)
     p_eb.add_argument("--aggregation", choices=["mean", "topk"], default="mean")
+    p_eb.add_argument("--learner", choices=["logreg", "gbt"], default="logreg")
     p_eb.add_argument(
         "--calibration",
         choices=["auto", "sigmoid", "isotonic"],

@@ -63,9 +63,10 @@ def run_eval_bridge(args: argparse.Namespace) -> int:
     dataset = temporal_split(examples, cutoff)
     baselines = tuple(args.baseline) if args.baseline else DEFAULT_BRIDGE_BASELINES
     calibration = getattr(args, "calibration", "auto")
+    learner = getattr(args, "learner", "logreg")
     model = train(
         dataset.train,
-        learner="logreg",
+        learner=learner,
         calibration_method=None if calibration == "auto" else calibration,
     )
 
@@ -75,11 +76,12 @@ def run_eval_bridge(args: argparse.Namespace) -> int:
         (label, compute_metrics(y_eval, baseline_probs(label, dataset.eval))) for label in baselines
     ]
 
-    fp = tracking.fingerprint({**cfg.as_dict(), "aggregation": aggregation})
+    fp = tracking.fingerprint({**cfg.as_dict(), "aggregation": aggregation, "learner": learner})
     data_window = (min(e.played_at for e in examples), max(e.played_at for e in examples))
     out_dir = pathlib.Path(args.out_dir) if getattr(args, "out_dir", None) else _default_out_dir()
     params = {
         "aggregation": aggregation,
+        "learner": learner,
         "calibration_method": model.calibration_method,
         "cutoff": args.cutoff,
         "lookback_months": args.lookback_months,
@@ -100,8 +102,11 @@ def run_eval_bridge(args: argparse.Namespace) -> int:
             cutoff=cutoff,
             data_window=data_window,
             feature_fingerprint=fp,
-            aggregation=aggregation,
-            calibration_method=model.calibration_method,
+            training_config={
+                "aggregation": aggregation,
+                "learner": learner,
+                "calibration_method": model.calibration_method,
+            },
             n_train=len(dataset.train),
             n_eval=len(dataset.eval),
             attribution_coverage=coverage,

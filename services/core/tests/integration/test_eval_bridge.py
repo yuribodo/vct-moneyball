@@ -16,16 +16,19 @@ from vct_moneyball.cli.eval_bridge import run_eval_bridge
 pytestmark = pytest.mark.integration
 
 
-def _args(cutoff: datetime, out_dir) -> argparse.Namespace:
+def _args(cutoff: datetime, out_dir, learner="logreg", aggregation="mean") -> argparse.Namespace:
     return argparse.Namespace(
         cutoff=cutoff.isoformat(),
         lookback_months=12,
-        aggregation="mean",
+        aggregation=aggregation,
+        learner=learner,
+        calibration="auto",
         baseline=["winrate-elo", "coin"],
         experiment="test-bridge",
         out_dir=str(out_dir),
         json=True,
         verbose=False,
+        publish=False,
     )
 
 
@@ -43,3 +46,16 @@ def test_eval_bridge_report(clean_db, tmp_path, monkeypatch) -> None:
     assert report["aggregation"] == "mean"
     coin = next(b for b in report["baselines"] if b["label"] == "coin")
     assert report["model"]["log_loss"] < coin["metrics"]["log_loss"]
+    assert report["learner"] == "logreg"
+
+
+def test_eval_bridge_report_gbt_learner(clean_db, tmp_path, monkeypatch) -> None:
+    monkeypatch.setenv("MLFLOW_TRACKING_URI", (tmp_path / "mlruns").as_uri())
+    with Session(clean_db) as s:
+        cutoff = seed_attributed_matches(s)
+        s.commit()
+    assert run_eval_bridge(_args(cutoff, tmp_path / "reports", learner="gbt")) == 0
+
+    report = json.loads(next((tmp_path / "reports").glob("*/report.json")).read_text())
+    validate_report(report)
+    assert report["learner"] == "gbt"

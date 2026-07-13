@@ -49,12 +49,17 @@ Predict a single ENC matchup using roster-derived strength.
 Roster-derived ordering of the 16 ENC teams.
 
 - **Options**: `--as-of <date>` (lock date), `--lookback-months <int>`, `--run <id>`,
-  `--out-dir <path>` (default `artifacts/models/bridge/`), `--version <id>`.
+  `--out-dir <path>` (default `artifacts/models/bridge/`), `--version <id>`, `--publish`
+  (points the `LATEST` pointer at this version once written).
 - **Preconditions**: 16 ENC teams each with an active roster; sides backfilled.
 - **Postconditions**: writes a dated, immutable `enc-ranking.json` (+ `.md`) citing its run;
   inserts no rows that modify feature-001/002 artifacts.
 - **Exit/validation**: non-zero if ≠16 ENC teams resolve or the output already exists.
-- **Output**: the 16-team ordered table with strength + confidence (text or `--json`).
+- **Output**: the 16-team ordered table with strength + confidence + `separation` (text or
+  `--json`). Confidence measures per-player data sufficiency; each team additionally carries
+  `elo_margin_to_next` (Elo gap to its nearest ranked neighbor) and a derived `separation`
+  (`clear` / `contested` / `razor-thin`) — a data-rich team can still be a statistical dead
+  heat with its neighbor, which confidence alone cannot express.
 
 ## Cross-cutting
 
