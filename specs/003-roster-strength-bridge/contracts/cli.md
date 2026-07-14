@@ -54,8 +54,12 @@ Roster-derived ordering of the 16 ENC teams.
 - **Preconditions**: 16 ENC teams each with an active roster; sides backfilled.
 - **Postconditions**: writes a dated, immutable `enc-ranking.json` (+ `.md`) citing its run;
   inserts no rows that modify feature-001/002 artifacts. The artifact records
-  `data_window` (`[as_of - lookback_months, as_of]`), matching the eval-report
-  convention, so a re-published ranking's inputs are as auditable as an eval run's.
+  `data_window` (`[as_of - lookback_months, as_of]`) — the nominal window requested for the
+  club-form query. Unlike the eval-report `data_window` (the true observed min/max of
+  `played_at` across matches that actually entered the dataset), this is not verified against
+  what data exists in that window; it can overstate the evidence behind a ranking when
+  attributed match history is sparser than the nominal lookback (e.g. shortly after an
+  initial `collect`/`backfill-sides`).
 - **Exit/validation**: non-zero if ≠16 ENC teams resolve or the output already exists.
 - **Output**: the 16-team ordered table with strength + confidence + `separation` (text or
   `--json`). Confidence measures per-player data sufficiency; each team additionally carries

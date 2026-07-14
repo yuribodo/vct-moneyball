@@ -43,8 +43,9 @@ def test_ranks_16_teams_and_is_immutable(clean_db, tmp_path) -> None:
     # neighbor to compare against, everyone else has two candidate gaps.
     assert all("separation" in t and "elo_margin_to_next" in t for t in artifact["teams"])
     assert all(t["separation"] in ("clear", "contested", "razor-thin") for t in artifact["teams"])
-    # Provenance parity with the eval-report convention: data_window derived from
-    # as_of/lookback_months (12 months here).
+    # data_window is the nominal lookback bound requested for the query, derived from
+    # as_of/lookback_months (12 months here) — not the eval-report convention of the
+    # true observed data span (see cli.md).
     as_of = datetime.fromisoformat(artifact["as_of"])
     expected_start = as_of - timedelta(days=30 * 12)
     assert datetime.fromisoformat(artifact["data_window"]["start"]) == expected_start
@@ -52,6 +53,21 @@ def test_ranks_16_teams_and_is_immutable(clean_db, tmp_path) -> None:
     # Immutable: refuse to overwrite.
     with pytest.raises(CliError, match="overwrite"):
         run_enc_ranking(_args(tmp_path))
+
+
+def test_data_window_tracks_lookback_months(clean_db, tmp_path) -> None:
+    """data_window.start must move with --lookback-months, not a hardcoded default."""
+    with Session(clean_db) as s:
+        seed_attributed_matches(s, n_teams=16, enc_teams=16, n_matches=200)
+        s.commit()
+    args = _args(tmp_path)
+    args.lookback_months = 6
+    assert run_enc_ranking(args) == 0
+
+    artifact = json.loads((tmp_path / "enc-2026.bridge.v1" / "enc-ranking.json").read_text())
+    as_of = datetime.fromisoformat(artifact["as_of"])
+    expected_start = as_of - timedelta(days=30 * 6)
+    assert datetime.fromisoformat(artifact["data_window"]["start"]) == expected_start
 
 
 def test_publish_moves_the_latest_pointer(clean_db, tmp_path) -> None:
