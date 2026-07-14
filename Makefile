@@ -3,7 +3,7 @@ GROUPS := --group scraping --group ml --group api
 
 .PHONY: help setup sync up down logs lint fmt test migrate collect build-ranking evaluate \
 	backfill-results train-winrate eval-winrate predict-match \
-	backfill-sides eval-bridge enc-predict enc-ranking serve
+	backfill-sides eval-bridge enc-predict enc-ranking serve refresh refresh-full
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -71,3 +71,21 @@ enc-ranking: ## vctm enc-ranking (pass ARGS="--as-of ... --version ...")
 
 serve: ## Run the read-only prediction API (http://127.0.0.1:8000/docs)
 	cd $(CORE) && uv run $(GROUPS) vctm serve $(ARGS)
+
+# Repeatable data refresh (issue #7): collect -> backfill-results -> backfill-sides ->
+# enc-ranking, so re-publishing roster strength on fresh data is one command, not a
+# hand-run sequence. Pass step-specific args via the REFRESH_*_ARGS vars, e.g.:
+#   make refresh REFRESH_COLLECT_ARGS="--cutoff 2026-07-12" REFRESH_RANKING_ARGS="--as-of 2026-11-08 --version enc-2026.bridge.v5"
+REFRESH_COLLECT_ARGS ?=
+REFRESH_RANKING_ARGS ?=
+REFRESH_EVAL_ARGS ?=
+
+refresh: ## Repeatable pipeline: collect -> backfill-results -> backfill-sides -> enc-ranking --publish
+	$(MAKE) collect ARGS="$(REFRESH_COLLECT_ARGS)"
+	$(MAKE) backfill-results
+	$(MAKE) backfill-sides
+	$(MAKE) enc-ranking ARGS="$(REFRESH_RANKING_ARGS) --publish"
+
+refresh-full: refresh ## refresh, then also eval-winrate + eval-bridge (pass REFRESH_EVAL_ARGS)
+	$(MAKE) eval-winrate ARGS="$(REFRESH_EVAL_ARGS)"
+	$(MAKE) eval-bridge ARGS="$(REFRESH_EVAL_ARGS)"

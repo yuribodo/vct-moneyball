@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import pathlib
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import select
 
@@ -87,9 +87,11 @@ def run_enc_ranking(args: argparse.Namespace) -> int:
     elos = [v.strength.elo for v in ordered]
     margins = [_elo_margin_to_next(elos, i) for i in range(len(elos))]
     version = args.version or f"enc-2026.bridge.{as_of.date().isoformat()}"
+    window_start = as_of - timedelta(days=30 * args.lookback_months)
     artifact = {
         "version": version,
         "as_of": as_of.isoformat(),
+        "data_window": {"start": window_start.isoformat(), "end": as_of.isoformat()},
         "aggregation": aggregation,
         "teams": [
             {
@@ -115,6 +117,7 @@ def run_enc_ranking(args: argparse.Namespace) -> int:
         "# ENC 2026 Power Ranking — roster-derived",
         "",
         f"- Version: `{version}`  ·  as of `{as_of.isoformat()}`  ·  aggregation `{aggregation}`",
+        f"- Data window: `{window_start.isoformat()}` → `{as_of.isoformat()}`",
         "",
         "| # | Team | Roster Elo | Confidence | Separation |",
         "|--:|------|-----------:|------------|------------|",
