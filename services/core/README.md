@@ -99,6 +99,44 @@ Reports land in `artifacts/models/winrate/<run>/` (JSON validated against
 match's signals use only data dated before it; the temporal split is verified) and a
 model that does not beat its baseline is reported as such.
 
+### EWC 2026 live validation
+
+The Esports World Cup 2026 (VLR event `2952`, Jul 2–12) was used as a true
+out-of-sample block for the club engine: train strictly before the event, evaluate on
+matches played during it (report `554b0d772e6d4e32852bc3694cfd6a7b`):
+
+```bash
+export VCTM_ENC_TEAMS="https://www.vlr.gg/team/22523/brazil,https://www.vlr.gg/team/22780/canada,https://www.vlr.gg/team/22524/chile,https://www.vlr.gg/team/19874/china,https://www.vlr.gg/team/22784/chinese-taipei,https://www.vlr.gg/team/22785/finland,https://www.vlr.gg/team/22783/great-britain,https://www.vlr.gg/team/22786/lithuania,https://www.vlr.gg/team/12206/malaysia,https://www.vlr.gg/team/12118/philippines,https://www.vlr.gg/team/22782/poland,https://www.vlr.gg/team/12120/singapore,https://www.vlr.gg/team/22779/south-korea,https://www.vlr.gg/team/19876/thailand,https://www.vlr.gg/team/22781/t-rkiye,https://www.vlr.gg/team/22778/united-states-of-america"
+uv run vctm collect --cutoff 2026-07-14 --window-months 12   # includes the EWC matches
+uv run vctm backfill-results && uv run vctm backfill-sides
+uv run vctm eval-winrate --cutoff 2026-07-01 \
+  --baseline winrate-elo --baseline recent-form --baseline coin
+```
+
+This recipe documents the **procedure**, run against the project's accumulated
+database (built by successive collects since mid-2025); it is not a from-scratch
+regeneration of this exact report. Collection is time-sensitive (player match-history
+listings only expose recent matches, and the raw HTML cache is local and unversioned),
+and 12 of the 1,226 training matches predate this collect's own window — they exist
+from earlier collect runs. What pins the report's inputs is its recorded provenance:
+`data_window`, `cutoff`, and `feature_fingerprint` in `report.json`.
+
+The model beat all three baselines on every metric (log-loss 0.6442 vs 0.6680 for the
+best baseline; accuracy 64.3% vs 60.0%), with `leakage_verified: true`. Honest scoping:
+
+- **This validates the club engine, not the ENC ranking.** EWC is a club event; ENC
+  (event `3008`, Nov 8–15) is national teams. The bridge (feature 003) derives ENC
+  strength from club form, so the EWC is a live test of that foundation — the locked
+  ENC predictions remain untouched and unscored until the ENC itself.
+- The eval block is every collected labeled club match on/after the cutoff (n=70:
+  28 EWC, 42 from concurrent Challengers/VCT events in the same window) — fresh
+  out-of-sample play involving ENC-rostered players' clubs. Train, eval, and baselines
+  all share that sample, so baseline-relative comparisons are unaffected by it.
+- n=70 is small: all four metrics favor the model, but no single edge is
+  statistically significant at this sample size. The value of the block is that it is
+  live, fresh, and leakage-free — directionally consistent evidence, not a decisive
+  result.
+
 ## Roster-strength bridge (feature 003)
 
 Derives each ENC national team's strength from its **active roster's club performance**
